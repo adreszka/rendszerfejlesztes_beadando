@@ -2,7 +2,7 @@
 {
     public class Alkatresz
     {
-        public int AlkatreszID { get; set; }
+        public int Id { get; set; }
         public string Alkatresz_megnevezes { get; set; }
         public int Ar { get; set; }
         public int MaxTarolasRekeszenkent { get; set; }

@@ -4,9 +4,11 @@ namespace rendszerfejlesztes_beadando.Models
 {
     public class Naplo
     {
-        public int NaploID { get; set; }
+        public int ID { get; set; }
         public DateTime Datum { get; set; }
-        public Projekt ProjektID { get; set; }
-        public Statusz StatuszID { get; set; }
+        public int ProjektID { get; set; }
+        public Projekt Projekt { get; set; }
+        public int StatuszID { get; set; }
+        public Statusz Statusz { get; set; }
     }
 }

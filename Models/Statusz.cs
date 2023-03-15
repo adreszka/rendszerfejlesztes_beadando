@@ -2,7 +2,7 @@
 {
     public class Statusz
     {
-        public int StatuszID { get; set; }
+        public int Id { get; set; }
         public string Statusz_megnevezes { get; set; }
     }
 }

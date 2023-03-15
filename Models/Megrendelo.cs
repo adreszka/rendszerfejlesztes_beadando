@@ -2,7 +2,7 @@
 {
     public class Megrendelo
     {
-        public int MegrendeloID { get; set; }
+        public int Id { get; set; }
         public string Nev { get; set; }
         public int Telefonszam{ get; set; }
         public string Email { get; set; }
