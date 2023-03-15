@@ -1,0 +1,41 @@
+version: '3.4'
+
+
+networks:
+  dev:
+    driver: bridge
+
+services:
+  rendszerfejlesztes_beadando:
+    image: ${DOCKER_REGISTRY-}rendszerfejlesztesbeadando
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - "app-db"
+    container_name: asd
+    ports:
+      - "90:90"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=app-db;User Id=SA; Password=mssql1Ipw;Database=Master;
+      - ASPNETCORE_URLS=http://+:90
+    networks:
+      - dev
+
+  app-db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: app_db
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=mssql1Ipw
+    ports:
+      - "1433:1433"
+    restart: always
+    volumes:
+      - app_data:/var/lib/mssql/data
+    networks:
+      - dev
+
+
+volumes:
+  app_data:
