@@ -1,9 +1,10 @@
 ﻿body {
+    color: white;
 }
 
 .bg{
     text-align: center;
-    background-color: crimson;
+    background-color: dodgerblue;
     padding: 10px;
     width: 50%;
     margin-left: auto;
@@ -12,5 +13,4 @@
 
 .input-field {
     margin-bottom: 2rem;
-    border: outset 2px;
 }
