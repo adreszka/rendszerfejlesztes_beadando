@@ -5,7 +5,7 @@ using rendszerfejlesztes_beadando.Repositories;
 
 namespace rendszerfejlesztes_beadando.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [Authorize]
     [ApiController]
     public class UserController : ControllerBase

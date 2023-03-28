@@ -4,7 +4,7 @@ using rendszerfejlesztes_beadando.Models;
 
 namespace rendszerfejlesztes_beadando.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]/[action]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -16,7 +16,7 @@ namespace rendszerfejlesztes_beadando.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Login([FromBody] LoginUser user)
+        public async Task<ActionResult<string>> Login([FromBody] LoginUser user)
         {
 
             var result = await authBl.Login(user);

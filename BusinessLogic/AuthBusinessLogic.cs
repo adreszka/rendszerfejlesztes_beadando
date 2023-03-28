@@ -29,7 +29,7 @@ namespace rendszerfejlesztes_beadando.BusinessLogic
             {
                 // valamit dobni kell exceptionnek
                 // throw new ResourceNotFoundException();
-                throw new Exception();
+                return "";
             }
 
             var result = await userManager.CheckPasswordAsync(authUser, user.password);
@@ -56,7 +56,7 @@ namespace rendszerfejlesztes_beadando.BusinessLogic
             }
             // valami hibát dobni kell majd
             // throw new UnauthorizedException();
-            throw new Exception();
+            return "";
         }
     }
 }

@@ -1,12 +1,18 @@
 ﻿import React from 'react';
 import { useNavigate } from "react-router-dom";
 import './Login.css';
+import Client from "../ApiServices.ts";
+import { LoginUser } from '../ApiServices';
 
 export function Login() {
     const navigate = useNavigate();
 
-    const auth = () => {
+    const lpogin = () => {
         navigate('/teszt');
+        user = new LoginUser();
+        user.username = "";
+        user.password = "";
+        Client.login()
     }
 
     return (
@@ -21,7 +27,7 @@ export function Login() {
                     <legend>Password:</legend>
                     <input type="text" id="pass"></input>
                 </fieldset>
-                <button onClick={auth}>Login</button>
+                <button onClick={login}>Login</button>
             </div>
         </div>
     );

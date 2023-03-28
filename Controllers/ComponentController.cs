@@ -6,7 +6,7 @@ using rendszerfejlesztes_beadando.Repositories;
 
 namespace rendszerfejlesztes_beadando.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ComponentController : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace rendszerfejlesztes_beadando.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] ComponentModel component)
+        public async Task<ActionResult> Post([FromBody] ComponentModel component)
         {
             await repo.Add(mapper.Map<Component>(component));
             return NoContent();
@@ -28,7 +28,7 @@ namespace rendszerfejlesztes_beadando.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put(string name, int price)
+        public async Task<ActionResult> Put(string name, int price)
         {
             await repo.Update(name, price);
             return NoContent();

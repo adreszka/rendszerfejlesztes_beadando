@@ -22,8 +22,8 @@ export class Client {
      * @param body (optional) 
      * @return Success
      */
-    auth(body: LoginUser | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/Auth";
+    login(body: LoginUser | undefined): Promise<string> {
+        let url_ = this.baseUrl + "/Auth/Login";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -33,27 +33,32 @@ export class Client {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "text/plain"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAuth(_response);
+            return this.processLogin(_response);
         });
     }
 
-    protected processAuth(response: Response): Promise<void> {
+    protected processLogin(response: Response): Promise<string> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<string>(null as any);
     }
 
     /**
@@ -61,7 +66,7 @@ export class Client {
      * @return Success
      */
     componentPOST(body: ComponentModel | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/Component";
+        let url_ = this.baseUrl + "/Component";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -100,7 +105,7 @@ export class Client {
      * @return Success
      */
     componentPUT(name: string | undefined, price: number | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/Component?";
+        let url_ = this.baseUrl + "/Component?";
         if (name === null)
             throw new Error("The parameter 'name' cannot be null.");
         else if (name !== undefined)
@@ -142,7 +147,7 @@ export class Client {
      * @return Success
      */
     user(body: User | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/User";
+        let url_ = this.baseUrl + "/User";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
