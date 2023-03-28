@@ -13,13 +13,13 @@ export function Login() {
         <div>
             <div className="bg">
                 <h1>Bejelentkezés</h1>
-                <fieldset className="input-field" id="name">
+                <fieldset className="input-field">
                     <legend>Felhasználónév:</legend>
-                    <input type="text"></input>
+                    <input type="text" id="name"></input>
                 </fieldset>
-                <fieldset className="input-field" id="pass">
+                <fieldset className="input-field">
                     <legend>Jelszó:</legend>
-                    <input type="text"></input>
+                    <input type="text" id="pass"></input>
                 </fieldset>
                 <button onClick={auth}>Bejelentkezés</button>
             </div>

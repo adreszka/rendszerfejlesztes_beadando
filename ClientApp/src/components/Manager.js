@@ -11,6 +11,8 @@ export function Manager() {
 
     }
 
+    var tomb = [1, 2];
+
     const listElements = () => {
         var result = tomb.map((temp) => {
             return <option value={temp}>{temp}</option>;
@@ -27,17 +29,17 @@ export function Manager() {
                         <td>
                             <div className="bg">
                                 <h1>Új alkatrész hozzáadása</h1>
-                                <fieldset className="input-field" id="name">
+                                <fieldset className="input-field">
                                     <legend>Felhasználónév:</legend>
-                                    <input type="text"></input>
+                                    <input type="text" id="name"></input>
                                 </fieldset>
-                                <fieldset className="input-field" id="price">
+                                <fieldset className="input-field">
                                     <legend>Jelszó:</legend>
-                                    <input type="number"></input>
+                                    <input type="number" id="price"></input>
                                 </fieldset>
-                                <fieldset className="input-field" id="maxAmount">
+                                <fieldset className="input-field">
                                     <legend>Jelszó:</legend>
-                                    <input type="number"></input>
+                                    <input type="number" id="maxAmount"></input>
                                 </fieldset>
                                 <button onClick={addComponent}>Felvitel</button>
                             </div>
@@ -48,6 +50,10 @@ export function Manager() {
                                 <select className="list">
                                     {listElements()}
                                 </select><br></br>
+                                <fieldset className="input-field">
+                                    <legend>Új ár:</legend>
+                                    <input type="number" id="newPrice"></input>
+                                </fieldset>
                                 <button onClick={update}>Frissítés</button>
                             </div>
                         </td>

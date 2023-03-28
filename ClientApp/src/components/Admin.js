@@ -11,13 +11,13 @@ export function Admin() {
         <div>
             <div class="bg">
                 <h1>Felhasználó regisztrálása</h1>
-                <fieldset className="input-field" id="name">
+                <fieldset className="input-field">
                     <legend>Felhasználónév:</legend>
-                    <input type="text"></input>
+                    <input type="text" id="name"></input>
                 </fieldset>
-                <fieldset className="input-field" id="pass">
+                <fieldset className="input-field">
                     <legend>Jelszó:</legend>
-                    <input type="text"></input>
+                    <input type="text" id="pass"></input>
                 </fieldset>
                 <select className="list">
                     <option>Raktáros</option>
