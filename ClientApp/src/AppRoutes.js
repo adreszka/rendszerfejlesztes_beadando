@@ -1,5 +1,4 @@
 import { Login } from "./components/Login";
-import { Teszt } from "./components/Teszt";
 import { Admin } from "./components/Admin";
 import { Manager } from "./components/Manager";
 
@@ -11,10 +10,6 @@ const AppRoutes = [
     {
         path: '/login',
         element: <Login />
-    },
-    {
-        path: '/teszt',
-        element: <Teszt />
     },
     {
         path: "/admin",

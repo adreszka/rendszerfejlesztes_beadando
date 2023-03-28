@@ -10,21 +10,21 @@ export function Admin() {
     return (
         <div>
             <div class="bg">
-                <h1>Felhasználó regisztrálása</h1>
+                <h1>User registration</h1>
                 <fieldset className="input-field">
-                    <legend>Felhasználónév:</legend>
+                    <legend>Username:</legend>
                     <input type="text" id="name"></input>
                 </fieldset>
                 <fieldset className="input-field">
-                    <legend>Jelszó:</legend>
+                    <legend>Password:</legend>
                     <input type="text" id="pass"></input>
                 </fieldset>
                 <select className="list">
-                    <option>Raktáros</option>
-                    <option>Raktár vezetõ</option>
-                    <option>Szakember</option>
+                    <option>Warehouse man</option>
+                    <option>Warehouse manager</option>
+                    <option>Specialist</option>
                 </select><br></br>
-                <button onClick={register}>Regisztrálás</button>
+                <button onClick={register}>Registration</button>
             </div>
         </div>
     );

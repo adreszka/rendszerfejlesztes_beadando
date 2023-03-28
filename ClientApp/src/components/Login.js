@@ -12,16 +12,16 @@ export function Login() {
     return (
         <div>
             <div className="bg">
-                <h1>Bejelentkezés</h1>
+                <h1>Login</h1>
                 <fieldset className="input-field">
-                    <legend>Felhasználónév:</legend>
+                    <legend>Username:</legend>
                     <input type="text" id="name"></input>
                 </fieldset>
                 <fieldset className="input-field">
-                    <legend>Jelszó:</legend>
+                    <legend>Password:</legend>
                     <input type="text" id="pass"></input>
                 </fieldset>
-                <button onClick={auth}>Bejelentkezés</button>
+                <button onClick={auth}>Login</button>
             </div>
         </div>
     );

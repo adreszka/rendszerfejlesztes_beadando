@@ -28,33 +28,33 @@ export function Manager() {
                     <tr>
                         <td>
                             <div className="bg">
-                                <h1>Új alkatrész hozzáadása</h1>
+                                <h1>Add new component</h1>
                                 <fieldset className="input-field">
-                                    <legend>Felhasználónév:</legend>
+                                    <legend>Name:</legend>
                                     <input type="text" id="name"></input>
                                 </fieldset>
                                 <fieldset className="input-field">
-                                    <legend>Jelszó:</legend>
+                                    <legend>Price:</legend>
                                     <input type="number" id="price"></input>
                                 </fieldset>
                                 <fieldset className="input-field">
-                                    <legend>Jelszó:</legend>
+                                    <legend>Max amount:</legend>
                                     <input type="number" id="maxAmount"></input>
                                 </fieldset>
-                                <button onClick={addComponent}>Felvitel</button>
+                                <button onClick={addComponent}>Add</button>
                             </div>
                         </td>
                         <td>
                             <div className="bg">
-                                <h1>Alkatrész szerkesztése</h1>
+                                <h1>Update component</h1>
                                 <select className="list">
                                     {listElements()}
                                 </select><br></br>
                                 <fieldset className="input-field">
-                                    <legend>Új ár:</legend>
+                                    <legend>New price:</legend>
                                     <input type="number" id="newPrice"></input>
                                 </fieldset>
-                                <button onClick={update}>Frissítés</button>
+                                <button onClick={update}>Update</button>
                             </div>
                         </td>
                     </tr>
