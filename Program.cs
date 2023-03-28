@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using rendszerfejlesztes_beadando.Data;
 using rendszerfejlesztes_beadando.Repositories;
+using rendszerfejlesztes_beadando.BusinessLogic;
+using rendszerfejlesztes_beadando.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +54,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddScoped<ComponentRepository>();
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<AuthBusinessLogic>();
+builder.Services.AddScoped<AuthTokenService>();
 
 var app = builder.Build();
 
