@@ -5,7 +5,7 @@ export function Teszt() {
     const navigate = useNavigate();
 
     const someEventHandler = () => {
-        navigate('/counter');
+        navigate('/login');
     } 
 
     return (
