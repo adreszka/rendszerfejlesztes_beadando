@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using rendszerfejlesztes_beadando.Models;
+using Microsoft.Identity.Client.Extensions.Msal;
+using rendszerfejlesztes_beadando.Models.Entities;
+using System.ComponentModel;
 
 namespace rendszerfejlesztes_beadando.Data
 {
@@ -7,13 +9,11 @@ namespace rendszerfejlesztes_beadando.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
-        //DbSet kell majd ide...
-        public DbSet<Projekt> Projekt { get; set; }
-        public DbSet<Megrendelo> Megrendelo { get; set; }
-        public DbSet<Alkatresz> Alkatresz { get; set; }
-
-        public DbSet<Raktar> Raktar { get; set; }
-        public DbSet<Statusz> Statusz { get; set; }
-        public DbSet<Naplo> Naplo { get; set; }
+        public DbSet<Models.Entities.Component> Components { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Log> Logs { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<Status> Statuses { get; set; }
+        public DbSet<Models.Entities.Storage> Storage { get; set; }
     }
 }

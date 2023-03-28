@@ -12,8 +12,8 @@ using rendszerfejlesztes_beadando.Data;
 namespace rendszerfejlesztes_beadando.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230315153628_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230328140019_AddStorage")]
+    partial class AddStorage
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace rendszerfejlesztes_beadando.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Alkatresz", b =>
+            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Entities.Component", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,75 +33,75 @@ namespace rendszerfejlesztes_beadando.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Alkatresz_megnevezes")
+                    b.Property<int>("MaxCapacity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Ar")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MaxTarolasRekeszenkent")
+                    b.Property<int>("Price")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Alkatresz");
+                    b.ToTable("Components");
                 });
 
-            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Megrendelo", b =>
+            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Entities.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Adoszam")
-                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Nev")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Telefonszam")
+                    b.Property<int>("PhoneNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TaxNumber")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Megrendelo");
+                    b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Naplo", b =>
+            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Entities.Log", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Datum")
+                    b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ProjektID")
+                    b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
-                    b.Property<int>("StatuszID")
+                    b.Property<int>("StatusId")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("ProjektID");
+                    b.HasIndex("ProjectId");
 
-                    b.HasIndex("StatuszID");
+                    b.HasIndex("StatusId");
 
-                    b.ToTable("Naplo");
+                    b.ToTable("Logs");
                 });
 
-            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Projekt", b =>
+            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Entities.Project", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -109,25 +109,25 @@ namespace rendszerfejlesztes_beadando.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Helyszin")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Leiras")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MegrendeloId")
+                    b.Property<int>("CustomerId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MegrendeloId");
+                    b.HasIndex("CustomerId");
 
-                    b.ToTable("Projekt");
+                    b.ToTable("Projects");
                 });
 
-            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Raktar", b =>
+            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Entities.Status", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -135,20 +135,16 @@ namespace rendszerfejlesztes_beadando.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AlkatreszId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Darabszam")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AlkatreszId");
-
-                    b.ToTable("Raktar");
+                    b.ToTable("Statuses");
                 });
 
-            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Statusz", b =>
+            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Entities.Storage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -156,54 +152,58 @@ namespace rendszerfejlesztes_beadando.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Statusz_megnevezes")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ComponentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Statusz");
+                    b.HasIndex("ComponentId");
+
+                    b.ToTable("Storage");
                 });
 
-            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Naplo", b =>
+            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Entities.Log", b =>
                 {
-                    b.HasOne("rendszerfejlesztes_beadando.Models.Projekt", "Projekt")
+                    b.HasOne("rendszerfejlesztes_beadando.Models.Entities.Project", "Project")
                         .WithMany()
-                        .HasForeignKey("ProjektID")
+                        .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("rendszerfejlesztes_beadando.Models.Statusz", "Statusz")
+                    b.HasOne("rendszerfejlesztes_beadando.Models.Entities.Status", "Status")
                         .WithMany()
-                        .HasForeignKey("StatuszID")
+                        .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Projekt");
+                    b.Navigation("Project");
 
-                    b.Navigation("Statusz");
+                    b.Navigation("Status");
                 });
 
-            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Projekt", b =>
+            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Entities.Project", b =>
                 {
-                    b.HasOne("rendszerfejlesztes_beadando.Models.Megrendelo", "Megrendelo")
+                    b.HasOne("rendszerfejlesztes_beadando.Models.Entities.Customer", "Customer")
                         .WithMany()
-                        .HasForeignKey("MegrendeloId")
+                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Megrendelo");
+                    b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Raktar", b =>
+            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Entities.Storage", b =>
                 {
-                    b.HasOne("rendszerfejlesztes_beadando.Models.Alkatresz", "Alkatresz")
+                    b.HasOne("rendszerfejlesztes_beadando.Models.Entities.Component", "Component")
                         .WithMany()
-                        .HasForeignKey("AlkatreszId")
+                        .HasForeignKey("ComponentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Alkatresz");
+                    b.Navigation("Component");
                 });
 #pragma warning restore 612, 618
         }
