@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using rendszerfejlesztes_beadando.Data;
+using rendszerfejlesztes_beadando.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +49,8 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.SignIn.RequireConfirmedEmail = false;
     //...
 });
+
+builder.Services.AddScoped<ComponentRepository>();
 
 var app = builder.Build();
 
