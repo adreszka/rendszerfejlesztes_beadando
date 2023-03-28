@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using rendszerfejlesztes_beadando.Models;
+using rendszerfejlesztes_beadando.Models.Entities;
 using rendszerfejlesztes_beadando.Repositories;
 
 namespace rendszerfejlesztes_beadando.Controllers
