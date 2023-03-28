@@ -1,18 +1,16 @@
-﻿import React from 'react';
+import React from 'react';
 import { useNavigate } from "react-router-dom";
-import './Login.css';
+import "./Admin.css";
 
-export function Login() {
-    const navigate = useNavigate();
+export function Admin() {
+    const register = () => {
 
-    const auth = () => {
-        navigate('/teszt');
     }
 
     return (
         <div>
-            <div className="bg">
-                <h1>Login</h1>
+            <div class="bg">
+                <h1>User registration</h1>
                 <fieldset className="input-field">
                     <legend>Username:</legend>
                     <input type="text" id="name"></input>
@@ -21,7 +19,12 @@ export function Login() {
                     <legend>Password:</legend>
                     <input type="text" id="pass"></input>
                 </fieldset>
-                <button onClick={auth}>Login</button>
+                <select className="list">
+                    <option>Warehouse man</option>
+                    <option>Warehouse manager</option>
+                    <option>Specialist</option>
+                </select><br></br>
+                <button onClick={register}>Registration</button>
             </div>
         </div>
     );
