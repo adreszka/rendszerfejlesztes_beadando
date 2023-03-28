@@ -51,6 +51,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 builder.Services.AddScoped<ComponentRepository>();
+builder.Services.AddScoped<UserRepository>();
 
 var app = builder.Build();
 
