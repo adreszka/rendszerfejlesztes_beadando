@@ -8,19 +8,20 @@ export function Login() {
 
     const navigate = useNavigate();
     const client = new Client();
-    const handleLogin = (event) => {
-        console.log("asd")
 
+    const handleLogin = (event) => {
         event.preventDefault();
         const data = new FormData(event.target);
 
-        client.login({"username":data.get('name'),"password":data.get('pass')}).then((val) => {
+        client.login({
+            "username": data.get('name'),
+            "password": data.get('pass')
+        }).then((val) => {
             console.log(val);
             if(val != "")
                 navigate('/manager');
         })
-        .catch((err) => console.log(err));;
-    
+        .catch((error) => { console.log(error) });
     }
 
     return (
