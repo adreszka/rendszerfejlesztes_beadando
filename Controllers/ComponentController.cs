@@ -20,10 +20,11 @@ namespace rendszerfejlesztes_beadando.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] ComponentModel component)
+        public async Task<ActionResult<bool>> Post([FromBody] ComponentModel component)
         {
-            await repo.Add(mapper.Map<Component>(component));
-            return NoContent();
+            var result = await repo.Add(mapper.Map<Component>(component));
+            if (result) return true;
+            else return false;
 
         }
 
@@ -32,6 +33,13 @@ namespace rendszerfejlesztes_beadando.Controllers
         {
             await repo.Update(name, price);
             return NoContent();
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<ComponentModel>> Get() 
+        {
+            var result = await repo.GetAll();
+            return Ok(result.Select(mapper.Map<ComponentModel>));
         }
     }
 

@@ -15,13 +15,13 @@ namespace rendszerfejlesztes_beadando.Repositories
             this.authContext = authContext;
             this.userManager = userManager;
         }
-        public async Task Add(User parameters)
+        public async Task<bool> Add(User parameters)
         {
             var userFound = authContext.Users.FirstOrDefault(p => p.UserName == parameters.UserName);
             if (userFound != null)
             {
                 // jelenleg nem tudom hogyan kéne lekezelni
-                throw new Exception();
+                return false;
             }
             var user = new IdentityUser
             {
@@ -37,6 +37,7 @@ namespace rendszerfejlesztes_beadando.Repositories
             await userStore.CreateAsync(user);
 
             await userManager.AddToRoleAsync(user, parameters.Role);
+            return true;
         }
     }
 }

@@ -19,10 +19,11 @@ namespace rendszerfejlesztes_beadando.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Post([FromBody] User user)
+        public async Task<ActionResult<bool>> Post([FromBody] User user)
         {
-            await repo.Add(user);
-            return NoContent();
+            var result = await repo.Add(user);
+            if (result) return true;
+            else return false;
         }
     }
 }

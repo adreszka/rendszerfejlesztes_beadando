@@ -1,4 +1,5 @@
-﻿using rendszerfejlesztes_beadando.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using rendszerfejlesztes_beadando.Data;
 using rendszerfejlesztes_beadando.Models.Entities;
 
 namespace rendszerfejlesztes_beadando.Repositories
@@ -10,17 +11,18 @@ namespace rendszerfejlesztes_beadando.Repositories
         {
             _context = context;
         }
-        public async Task Add(Component parameters)
+        public async Task<bool> Add(Component parameters)
         {
             var component = _context.Components.FirstOrDefault(p => p.Name == parameters.Name);
             if (component != null)
             {
                 // jelenleg nem tudom hogyan kéne lekezelni
-                throw new Exception();
+                return false;
             }
 
             _context.Add(parameters);
             await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task Update(string name, int price)
@@ -34,6 +36,11 @@ namespace rendszerfejlesztes_beadando.Repositories
 
             component.Price = price;
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Component>> GetAll() 
+        {
+            return await _context.Components.ToListAsync();
         }
     }
 }
