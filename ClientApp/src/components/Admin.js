@@ -38,8 +38,8 @@ export function Admin() {
                         <input type="text" id="pass" name="pass"></input>
                     </fieldset>
                     <select className="list" id="list" name="list">
-                        <option value="WarehouseMan">Warehouse man</option>
-                        <option value="Manager">Warehouse manager</option>
+                        <option value="Warehouseman">Warehouse man</option>
+                        <option value="WarehouseManager">Warehouse manager</option>
                         <option value="Specialist">Specialist</option>
                     </select><br></br>
                     <button>Registration</button>

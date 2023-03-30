@@ -29,32 +29,36 @@ export function Manager() {
                         <td>
                             <div className="bg">
                                 <h1>Add new component</h1>
-                                <fieldset className="input-field">
-                                    <legend>Name:</legend>
-                                    <input type="text" id="name"></input>
-                                </fieldset>
-                                <fieldset className="input-field">
-                                    <legend>Price:</legend>
-                                    <input type="number" id="price"></input>
-                                </fieldset>
-                                <fieldset className="input-field">
-                                    <legend>Max amount:</legend>
-                                    <input type="number" id="maxAmount"></input>
-                                </fieldset>
-                                <button onClick={addComponent}>Add</button>
+                                <form onSubmit={addComponent}>
+                                    <fieldset className="input-field">
+                                        <legend>Name:</legend>
+                                        <input type="text" id="name"></input>
+                                    </fieldset>
+                                    <fieldset className="input-field">
+                                        <legend>Price:</legend>
+                                        <input type="number" id="price" min="0"></input>
+                                    </fieldset>
+                                    <fieldset className="input-field">
+                                        <legend>Max amount:</legend>
+                                        <input type="number" id="maxAmount" min="0"></input>
+                                    </fieldset>
+                                    <button>Add</button>
+                                    </form>
                             </div>
                         </td>
                         <td>
                             <div className="bg">
                                 <h1>Update component</h1>
-                                <select className="list">
-                                    {listElements()}
-                                </select><br></br>
-                                <fieldset className="input-field">
-                                    <legend>New price:</legend>
-                                    <input type="number" id="newPrice"></input>
-                                </fieldset>
-                                <button onClick={update}>Update</button>
+                                <form onSubmit={update}>
+                                    <select className="list">
+                                        {listElements()}
+                                    </select><br></br>
+                                    <fieldset className="input-field">
+                                        <legend>New price:</legend>
+                                        <input type="number" id="newPrice" min="0"></input>
+                                    </fieldset>
+                                    <button>Update</button>
+                                </form>
                             </div>
                         </td>
                     </tr>
