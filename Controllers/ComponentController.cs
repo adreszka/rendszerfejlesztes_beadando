@@ -36,7 +36,7 @@ namespace rendszerfejlesztes_beadando.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ComponentModel>> Get() 
+        public async Task<ActionResult<IEnumerable<ComponentModel>>> Get() 
         {
             var result = await repo.GetAll();
             return Ok(result.Select(mapper.Map<ComponentModel>));

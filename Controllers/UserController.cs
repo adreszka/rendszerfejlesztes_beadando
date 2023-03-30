@@ -6,7 +6,6 @@ using rendszerfejlesztes_beadando.Repositories;
 namespace rendszerfejlesztes_beadando.Controllers
 {
     [Route("[controller]")]
-    [Authorize]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -18,7 +17,6 @@ namespace rendszerfejlesztes_beadando.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
         public async Task<ActionResult<bool>> Post([FromBody] User user)
         {
             var result = await repo.Add(user);
