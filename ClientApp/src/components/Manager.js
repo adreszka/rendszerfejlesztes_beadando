@@ -1,10 +1,27 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
 import "./Manager.css";
+import { Client } from "../ApiServices.ts";
 
 export function Manager() {
-    const addComponent = () => {
-        
+    var client = new Client();
+
+    const addComponent = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.target);
+
+        client.componentPOST({
+            "name": data.get('name'),
+            "price": data.get('price'),
+            "maxCapacity": data.get('maxAmount')
+        }).then((val) => {
+            if (val == true) {
+                window.alert("Component successfully added");
+            } else {
+                window.alert("The component is already in the database!");
+            }
+        })
+        .catch((error) => { console.log(error) });
     }
 
     const update = () => {
@@ -32,15 +49,15 @@ export function Manager() {
                                 <form onSubmit={addComponent}>
                                     <fieldset className="input-field">
                                         <legend>Name:</legend>
-                                        <input type="text" id="name"></input>
+                                        <input type="text" id="name" name="name"></input>
                                     </fieldset>
                                     <fieldset className="input-field">
                                         <legend>Price:</legend>
-                                        <input type="number" id="price" min="0"></input>
+                                        <input type="number" id="price" min="0" name="price"></input>
                                     </fieldset>
                                     <fieldset className="input-field">
                                         <legend>Max amount:</legend>
-                                        <input type="number" id="maxAmount" min="0"></input>
+                                        <input type="number" id="maxAmount" min="0" name="maxAmount"></input>
                                     </fieldset>
                                     <button>Add</button>
                                     </form>

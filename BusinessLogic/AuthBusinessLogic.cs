@@ -27,7 +27,7 @@ namespace rendszerfejlesztes_beadando.BusinessLogic
 
             if (authUser == null)
             {
-                return ".";
+                return "";
             }
 
             var result = await userManager.CheckPasswordAsync(authUser, user.password);
@@ -51,7 +51,7 @@ namespace rendszerfejlesztes_beadando.BusinessLogic
                 //var token = tokenService.GenerateToken(authClaims);
                 //return (new JwtSecurityTokenHandler().WriteToken(token));
             }
-            return ".";
+            return "";
         }
     }
 }

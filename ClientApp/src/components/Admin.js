@@ -13,7 +13,7 @@ export function Admin() {
         client.user({
             "username": data.get('name'),
             "password": data.get('pass'),
-            "role": data.get('list').value
+            "role": data.get('list')
         }).then((val) => {
             if (val == true) {
                 window.alert("Successful registration");
