@@ -27,8 +27,6 @@ namespace rendszerfejlesztes_beadando.BusinessLogic
 
             if (authUser == null)
             {
-                // valamit dobni kell exceptionnek
-                // throw new ResourceNotFoundException();
                 return "";
             }
 
@@ -37,25 +35,22 @@ namespace rendszerfejlesztes_beadando.BusinessLogic
             if (result)
             {
 
-                var userRoles = await userManager.GetRolesAsync(authUser);
+                var userRole = await userManager.GetRolesAsync(authUser);
 
+                return userRole[0];
+                //var authClaims = new List<Claim>
+                //{
+                //    new Claim(ClaimTypes.Name, authUser.UserName),
+                //    // new Claim("emailConfirmed", authUser.EmailConfirmed.ToString())
+                //};
+                //foreach (var role in userRoles)
+                //{
+                //    authClaims.Add(new Claim(ClaimTypes.Role, role));
+                //}
 
-
-                var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, authUser.UserName),
-                    // new Claim("emailConfirmed", authUser.EmailConfirmed.ToString())
-                };
-                foreach (var role in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, role));
-                }
-
-                var token = tokenService.GenerateToken(authClaims);
-                return (new JwtSecurityTokenHandler().WriteToken(token));
+                //var token = tokenService.GenerateToken(authClaims);
+                //return (new JwtSecurityTokenHandler().WriteToken(token));
             }
-            // valami hibát dobni kell majd
-            // throw new UnauthorizedException();
             return "";
         }
     }
