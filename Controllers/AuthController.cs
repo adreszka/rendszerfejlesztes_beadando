@@ -15,6 +15,8 @@ namespace rendszerfejlesztes_beadando.Controllers
             this.authBl = authBl;
         }
 
+        // Ezt az endpointot hívja meg a felhasználó amikor rányom a bejelentkezés gombra
+        // és visszaadja a stringet amit kap az AuthBusinessLogic Login funkciójától
         [HttpPost]
         public async Task<ActionResult<string>> Login([FromBody] LoginUser user)
         {

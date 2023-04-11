@@ -21,6 +21,8 @@ namespace rendszerfejlesztes_beadando.BusinessLogic
             this.authContext = authContext;
         }
 
+        // Ellenörzi, hogy a felhasználó szerepel-e az adatbázisban és ha igen
+        // akkor visszaadja a jogosultságát, ha pedig nem akkor egy üres stringet ad vissza
         public async Task<string> Login(LoginUser user)
         {
             var authUser = await userManager.FindByNameAsync(user.username);
@@ -38,6 +40,9 @@ namespace rendszerfejlesztes_beadando.BusinessLogic
                 var userRole = await userManager.GetRolesAsync(authUser);
 
                 return userRole[0];
+
+                // JWT tokenes autentikáció amit jelenleg nem használunk
+
                 //var authClaims = new List<Claim>
                 //{
                 //    new Claim(ClaimTypes.Name, authUser.UserName),

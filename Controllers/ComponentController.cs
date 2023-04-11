@@ -19,6 +19,7 @@ namespace rendszerfejlesztes_beadando.Controllers
             this.mapper = mapper;
         }
 
+        // Ezt az endpointot hívja meg a raktárvezető ha új alkatrészt akar hozzáadni 
         [HttpPost]
         public async Task<ActionResult<bool>> Post([FromBody] ComponentModel component)
         {
@@ -28,6 +29,7 @@ namespace rendszerfejlesztes_beadando.Controllers
 
         }
 
+        // Ezt az endpointot hívja meg a raktárvezető ha módosítani akarja az árát az adott alkatrésznek
         [HttpPut]
         public async Task<ActionResult> Put(string name, int price)
         {
@@ -35,6 +37,7 @@ namespace rendszerfejlesztes_beadando.Controllers
             return NoContent();
         }
 
+        // Ezzel az endpointal le lehet kérni az összes alkatrészt
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ComponentModel>>> Get() 
         {

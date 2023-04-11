@@ -12,6 +12,7 @@ namespace rendszerfejlesztes_beadando.Data
         {
         }
 
+        // Az adatbázisba eltároljuk, hogy milyen jogosultságok vannak és hozzáadjuk az admint a rendszerhez
         protected override void OnModelCreating(ModelBuilder builder)
         {
             var roles = new List<IdentityRole>();

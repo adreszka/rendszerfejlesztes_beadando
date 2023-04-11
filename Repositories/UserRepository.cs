@@ -15,12 +15,16 @@ namespace rendszerfejlesztes_beadando.Repositories
             this.authContext = authContext;
             this.userManager = userManager;
         }
+
+        // Hozzáadja az új felhasználót az adatbázisba, ha nem szerepel az a felhasználónév
+        // és visszaad egy true-t, ha szerepel akkor pedig egy false-t ad vissza
+        // Ha true az azt jelenti, hogy sikerült elmenteni az adatbázisba, ha pedig false
+        // akkor pedig, hogy nem sikerült
         public async Task<bool> Add(User parameters)
         {
             var userFound = authContext.Users.FirstOrDefault(p => p.UserName == parameters.UserName);
             if (userFound != null)
             {
-                // jelenleg nem tudom hogyan kéne lekezelni
                 return false;
             }
             var user = new IdentityUser

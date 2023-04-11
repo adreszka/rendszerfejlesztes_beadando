@@ -16,6 +16,7 @@ namespace rendszerfejlesztes_beadando.Controllers
             this.repo = repo;
         }
 
+        // Ezzel az endpointal hozzá lehet adni új felhasználót a rendszerbe
         [HttpPost]
         public async Task<ActionResult<bool>> Post([FromBody] User user)
         {

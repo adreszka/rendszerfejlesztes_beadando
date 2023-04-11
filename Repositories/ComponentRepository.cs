@@ -11,12 +11,16 @@ namespace rendszerfejlesztes_beadando.Repositories
         {
             _context = context;
         }
+
+        // Megnézi, hogy az adatbázis tartalmazza-e az adott alkatrészt ha igen akkor vissza ad egy hamisat
+        // ha pedig nem tartalmazza akkor egy igazat és közben elmenti az adatbázisba
+        // Ha true-t ad vissza azt jelenti, hogy sikerült elmenteni az adatbázisba
+        // ha pedig false akkor nem
         public async Task<bool> Add(Component parameters)
         {
             var component = _context.Components.FirstOrDefault(p => p.Name == parameters.Name);
             if (component != null)
             {
-                // jelenleg nem tudom hogyan kéne lekezelni
                 return false;
             }
 
@@ -25,6 +29,9 @@ namespace rendszerfejlesztes_beadando.Repositories
             return true;
         }
 
+        // Megnézi, hogy az alkatrész szerepel-e az adatbázisba és ha szerepel akkor 
+        // megváltoztatja az árát annak az alkatrésznek és elmenti, ha pedig nem akkor
+        // dob egy exceptiont
         public async Task Update(string name, int price)
         {
             var component = _context.Components.FirstOrDefault(p => p.Name == name);
@@ -38,6 +45,7 @@ namespace rendszerfejlesztes_beadando.Repositories
             await _context.SaveChangesAsync();
         }
 
+        // Visszaadja az összes alkatrészt az adatbázisból lista formájában
         public async Task<IEnumerable<Component>> GetAll() 
         {
             return await _context.Components.ToListAsync();
