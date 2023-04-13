@@ -31,7 +31,7 @@ export function Admin() {
                 <form onSubmit={register}>
                     <fieldset className="input-field">
                         <legend>Username:</legend>
-                        <input type="text" id="name" name="pass"></input>
+                        <input type="text" id="name" name="name"></input>
                     </fieldset>
                     <fieldset className="input-field">
                         <legend>Password:</legend>
