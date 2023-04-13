@@ -17,7 +17,7 @@ namespace rendszerfejlesztes_beadando.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
                     MaxCapacity = table.Column<int>(type: "int", nullable: false)
                 },
@@ -34,7 +34,7 @@ namespace rendszerfejlesztes_beadando.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<int>(type: "int", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     TaxNumber = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -48,7 +48,7 @@ namespace rendszerfejlesztes_beadando.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -59,7 +59,11 @@ namespace rendszerfejlesztes_beadando.Migrations
                 name: "Storage",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Row = table.Column<int>(type: "int", nullable: false),
+                    Columnn = table.Column<int>(type: "int", nullable: false),
+                    Level = table.Column<int>(type: "int", nullable: false),
                     ComponentId = table.Column<int>(type: "int", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: true)
                 },
@@ -123,6 +127,24 @@ namespace rendszerfejlesztes_beadando.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Components_Name",
+                table: "Components",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_Email",
+                table: "Customers",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_PhoneNumber",
+                table: "Customers",
+                column: "PhoneNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Logs_ProjectId",
                 table: "Logs",
                 column: "ProjectId");
@@ -138,9 +160,21 @@ namespace rendszerfejlesztes_beadando.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Statuses_Name",
+                table: "Statuses",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Storage_ComponentId",
                 table: "Storage",
                 column: "ComponentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Storage_Row_Columnn_Level",
+                table: "Storage",
+                columns: new[] { "Row", "Columnn", "Level" },
+                unique: true);
         }
 
         /// <inheritdoc />

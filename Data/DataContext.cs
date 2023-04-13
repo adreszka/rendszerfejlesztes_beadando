@@ -17,5 +17,23 @@ namespace rendszerfejlesztes_beadando.Data
         public DbSet<Project> Projects { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Models.Entities.Storage> Storage { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Models.Entities.Component>().HasIndex(x => x.Name).IsUnique();
+
+            builder.Entity<Models.Entities.Storage>().HasIndex(x => new 
+            { 
+                x.Row, x.Columnn, x.Level 
+            }).IsUnique();
+
+            builder.Entity<Customer>().HasIndex(x => x.PhoneNumber).IsUnique();
+            builder.Entity<Customer>().HasIndex(x => x.Email).IsUnique();
+
+            builder.Entity<Status>().HasIndex(x => x.Name).IsUnique();
+
+
+            base.OnModelCreating(builder);
+        }
     }
 }

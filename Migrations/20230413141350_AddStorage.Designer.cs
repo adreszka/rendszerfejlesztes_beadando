@@ -12,8 +12,8 @@ using rendszerfejlesztes_beadando.Data;
 namespace rendszerfejlesztes_beadando.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230328134814_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230413141350_AddStorage")]
+    partial class AddStorage
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,12 +38,15 @@ namespace rendszerfejlesztes_beadando.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Components");
                 });
@@ -58,7 +61,7 @@ namespace rendszerfejlesztes_beadando.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -71,6 +74,12 @@ namespace rendszerfejlesztes_beadando.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
 
                     b.ToTable("Customers");
                 });
@@ -137,9 +146,12 @@ namespace rendszerfejlesztes_beadando.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Statuses");
                 });
@@ -152,15 +164,27 @@ namespace rendszerfejlesztes_beadando.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("Columnn")
+                        .HasColumnType("int");
+
                     b.Property<int>("ComponentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Level")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<int>("Row")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ComponentId");
+
+                    b.HasIndex("Row", "Columnn", "Level")
+                        .IsUnique();
 
                     b.ToTable("Storage");
                 });
