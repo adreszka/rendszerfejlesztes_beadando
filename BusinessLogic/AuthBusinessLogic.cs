@@ -16,14 +16,14 @@ namespace rendszerfejlesztes_beadando.BusinessLogic
         }
 
         // Ellenörzi, hogy a felhasználó szerepel-e az adatbázisban és ha igen
-        // akkor visszaadja a jogosultságát, ha pedig nem akkor egy üres stringet ad vissza
-        public async Task<string> Login(LoginUser user)
+        // akkor visszaadja a jogosultságát, ha pedig nem akkor egy üres objektumot ad vissza
+        public async Task<UserRole> Login(LoginUser user)
         {
             var authUser = await userManager.FindByNameAsync(user.username);
 
             if (authUser == null)
             {
-                return "";
+                return new UserRole();
             }
 
             var result = await userManager.CheckPasswordAsync(authUser, user.password);
@@ -33,7 +33,12 @@ namespace rendszerfejlesztes_beadando.BusinessLogic
 
                 var userRole = await userManager.GetRolesAsync(authUser);
 
-                return userRole[0];
+                var role = new UserRole
+                {
+                    Role = userRole[0]
+                };
+
+                return role;
 
                 // JWT tokenes autentikáció amit jelenleg nem használunk
 
@@ -50,7 +55,7 @@ namespace rendszerfejlesztes_beadando.BusinessLogic
                 //var token = tokenService.GenerateToken(authClaims);
                 //return (new JwtSecurityTokenHandler().WriteToken(token));
             }
-            return "";
+            return new UserRole();
         }
     }
 }

@@ -16,11 +16,10 @@ namespace rendszerfejlesztes_beadando.Controllers
         }
 
         // Ezt az endpointot hívja meg a felhasználó amikor rányom a bejelentkezés gombra
-        // és visszaadja a stringet amit kap az AuthBusinessLogic Login funkciójától
+        // és visszaadja a felhasználó jogát amit kap az AuthBusinessLogic Login funkciójától
         [HttpPost]
-        public async Task<ActionResult<string>> Login([FromBody] LoginUser user)
+        public async Task<ActionResult<UserRole>> Login([FromBody] LoginUser user)
         {
-
             var result = await authBl.Login(user);
             return Ok(result);
         }

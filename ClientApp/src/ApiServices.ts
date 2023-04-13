@@ -22,7 +22,7 @@ export class Client {
      * @param body (optional) 
      * @return Success
      */
-    login(body: LoginUser | undefined): Promise<string> {
+    login(body: LoginUser | undefined): Promise<UserRole> {
         let url_ = this.baseUrl + "/Auth/Login";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -42,15 +42,14 @@ export class Client {
         });
     }
 
-    protected processLogin(response: Response): Promise<string> {
+    protected processLogin(response: Response): Promise<UserRole> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+            result200 = UserRole.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -58,7 +57,7 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<string>(null as any);
+        return Promise.resolve<UserRole>(null as any);
     }
 
     /**
@@ -404,6 +403,42 @@ export class User implements IUser {
 export interface IUser {
     userName?: string | undefined;
     password?: string | undefined;
+    role?: string | undefined;
+}
+
+export class UserRole implements IUserRole {
+    role?: string | undefined;
+
+    constructor(data?: IUserRole) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.role = _data["role"];
+        }
+    }
+
+    static fromJS(data: any): UserRole {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserRole();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["role"] = this.role;
+        return data;
+    }
+}
+
+export interface IUserRole {
     role?: string | undefined;
 }
 
