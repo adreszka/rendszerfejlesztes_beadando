@@ -10,15 +10,9 @@ namespace rendszerfejlesztes_beadando.BusinessLogic
     public class AuthBusinessLogic
     {
         private readonly UserManager<IdentityUser> userManager;
-        private readonly RoleManager<IdentityRole> roleManager;
-        private readonly AuthTokenService tokenService;
-        private readonly AuthDbContext authContext;
-        public AuthBusinessLogic(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, AuthTokenService tokenService, AuthDbContext authContext)
+        public AuthBusinessLogic(UserManager<IdentityUser> userManager)
         {
             this.userManager = userManager;
-            this.roleManager = roleManager;
-            this.tokenService = tokenService;
-            this.authContext = authContext;
         }
 
         // Ellenörzi, hogy a felhasználó szerepel-e az adatbázisban és ha igen
