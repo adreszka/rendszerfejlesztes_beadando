@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using rendszerfejlesztes_beadando.Data;
+using rendszerfejlesztes_beadando.Models;
 using rendszerfejlesztes_beadando.Models.Entities;
 
 namespace rendszerfejlesztes_beadando.Repositories
@@ -32,16 +34,15 @@ namespace rendszerfejlesztes_beadando.Repositories
         // Megnézi, hogy az alkatrész szerepel-e az adatbázisba és ha szerepel akkor 
         // megváltoztatja az árát annak az alkatrésznek és elmenti, ha pedig nem akkor
         // dob egy exceptiont
-        public async Task<bool> Update(string name, int price)
+        public async Task<bool> Update(ComponentModel comp)
         {
-            var component = _context.Components.FirstOrDefault(p => p.Name == name);
-
+            var component = _context.Components.FirstOrDefault(p => p.Name == comp.Name);
             if (component == null)
             {
                 return false;
             }
 
-            component.Price = price;
+            component.Price = comp.Price;
             await _context.SaveChangesAsync();
             return true;
         }

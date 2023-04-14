@@ -30,9 +30,9 @@ namespace rendszerfejlesztes_beadando.Controllers
 
         // Ezt az endpointot hívja meg a raktárvezető ha módosítani akarja az árát az adott alkatrésznek
         [HttpPut]
-        public async Task<ActionResult<bool>> Put(string name, int price)
+        public async Task<ActionResult<bool>> Put([FromBody] ComponentModel component)
         {
-            var result = await repo.Update(name, price);
+            var result = await repo.Update(component);
             return Ok(result);
         }
 
