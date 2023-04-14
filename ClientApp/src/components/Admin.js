@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from "react-router-dom";
 import "./Admin.css";
 import { Client } from "../ApiServices.ts";
 
@@ -20,8 +19,7 @@ export function Admin() {
             } else {
                 window.alert("The username is already in use!");
             }
-        })
-        .catch((error) => { console.log(error) });
+        }).catch((error) => { console.log(error) });
     }
 
     return (

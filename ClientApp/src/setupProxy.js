@@ -11,6 +11,7 @@ const context =  [
     "/Auth/Login",
     "/Component",
     "/User",
+    "/Storage",
 ];
 
 module.exports = function(app) {

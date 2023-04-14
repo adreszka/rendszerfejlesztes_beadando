@@ -1,10 +1,15 @@
-import React from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
 import "./Manager.css";
 import { Client } from "../ApiServices.ts";
 
 export function Manager() {
     var client = new Client();
+    const [elements, setElements] = useState([]);
+    var flag = 0;
+
+    useEffect(() => {
+        getElements();
+    },[flag])
 
     const addComponent = (event) => {
         event.preventDefault();
@@ -15,28 +20,63 @@ export function Manager() {
             "price": data.get('price'),
             "maxCapacity": data.get('maxAmount')
         }).then((val) => {
-            if (val == true) {
+            if (val === true) {
                 window.alert("Component successfully added");
             } else {
                 window.alert("The component is already in the database!");
             }
-        })
-        .catch((error) => { console.log(error) });
+        }).catch((error) => { console.log(error) });
+
+        flag++;
+        listElements();
     }
 
-    const update = () => {
-
+    const getElements = async () => {
+        await client.componentAll().then((val) => {
+            setElements(val);
+        }).catch((error) => console.log(error));
     }
-
-    var tomb = [1, 2];
 
     const listElements = () => {
-        var result = tomb.map((temp) => {
-            return <option value={temp}>{temp}</option>;
-        });
+        var result = new Array(<option value="choose" >Choose a component</option>);
+
+        result = result.concat(elements.map((temp) => {
+            var name = temp['name'];
+
+            return <option value={name} >{name}</option>;
+        }));
 
         return result;
     }
+
+    const updateComponents = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.target);
+
+        if (document.getElementById('list').value != "choose") {
+            client.componentPUT({
+                "name": String(data.get('list')),
+                "price": parseInt(data.get('newPrice'))
+            }).then((val) => {
+                if (val) {
+                    window.alert("The price of the component was successfully changed!");
+                } else {
+                    window.alert("An error occurred during the change of the price!");
+                }
+            }).catch((error) => { console.log(error) });
+        }
+
+        flag++
+        listElements();
+    };
+
+    const setCurrentComponent = (option) => {
+        if (option.target.value != "choose") {
+            document.getElementById('currentPrice').value = elements.find((temp) => { return temp['name'] == option.target.value })['price'];
+        } else {
+            document.getElementById('currentPrice').value = "";
+        }
+    };
 
     return (
         <div>
@@ -66,13 +106,17 @@ export function Manager() {
                         <td>
                             <div className="bg">
                                 <h1>Update component</h1>
-                                <form onSubmit={update}>
-                                    <select className="list">
+                                <form onSubmit={updateComponents}>
+                                    <select className="list" id="list" name="list" onChange={setCurrentComponent}>
                                         {listElements()}
                                     </select><br></br>
                                     <fieldset className="input-field">
+                                        <legend>Current price:</legend>
+                                        <input type="text" id="currentPrice" name="currentPrice" readOnly></input>
+                                    </fieldset>
+                                    <fieldset className="input-field">
                                         <legend>New price:</legend>
-                                        <input type="number" id="newPrice" min="0"></input>
+                                        <input type="number" id="newPrice" name="newPrice" min="0"></input>
                                     </fieldset>
                                     <button>Update</button>
                                 </form>

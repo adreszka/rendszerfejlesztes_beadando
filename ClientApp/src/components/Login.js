@@ -7,7 +7,7 @@ import { LoginUser } from '../ApiServices.ts';
 export function Login() {
 
     const navigate = useNavigate();
-    const client = new Client();
+    var client = new Client();
 
     const handleLogin = (event) => {
         event.preventDefault();
@@ -18,13 +18,13 @@ export function Login() {
             "password": data.get('pass')
         }).then((val) => {
             console.log(val);
-            if(val == "WarehouseManager")
+            if(val['role'] == "WarehouseManager")
                 navigate('/manager');
-            if (val == "Administrator") {
+            if (val['role'] == "Administrator") {
                 navigate('/admin');
                 console.log("adsdf");
             }
-            if(val == ".")
+            if(val['role'] == null)
                 window.alert("Invalid username or password!");
         })
         .catch((error) => { console.log(error) });
