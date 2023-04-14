@@ -24,17 +24,16 @@ namespace rendszerfejlesztes_beadando.Controllers
         public async Task<ActionResult<bool>> Post([FromBody] ComponentModel component)
         {
             var result = await repo.Add(mapper.Map<Component>(component));
-            if (result) return true;
-            else return false;
+            return Ok(result);
 
         }
 
         // Ezt az endpointot hívja meg a raktárvezető ha módosítani akarja az árát az adott alkatrésznek
         [HttpPut]
-        public async Task<ActionResult> Put(string name, int price)
+        public async Task<ActionResult<bool>> Put(string name, int price)
         {
-            await repo.Update(name, price);
-            return NoContent();
+            var result = await repo.Update(name, price);
+            return Ok(result);
         }
 
         // Ezzel az endpointal le lehet kérni az összes alkatrészt

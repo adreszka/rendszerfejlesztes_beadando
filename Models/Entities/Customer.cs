@@ -9,6 +9,6 @@ namespace rendszerfejlesztes_beadando.Models.Entities
         public string Name { get; set; }
         public int PhoneNumber { get; set; }
         public string Email { get; set; }
-        public int TaxNumber { get; set; }
+        public int? TaxNumber { get; set; }
     }
 }

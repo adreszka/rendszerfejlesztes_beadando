@@ -85,6 +85,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddScoped<ComponentRepository>();
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<StorageRepository>();
 builder.Services.AddScoped<AuthBusinessLogic>();
 builder.Services.AddScoped<AuthTokenService>();
 

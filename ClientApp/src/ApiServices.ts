@@ -108,7 +108,7 @@ export class Client {
      * @param price (optional) 
      * @return Success
      */
-    componentPUT(name: string | undefined, price: number | undefined): Promise<void> {
+    componentPUT(name: string | undefined, price: number | undefined): Promise<boolean> {
         let url_ = this.baseUrl + "/Component?";
         if (name === null)
             throw new Error("The parameter 'name' cannot be null.");
@@ -123,6 +123,7 @@ export class Client {
         let options_: RequestInit = {
             method: "PUT",
             headers: {
+                "Accept": "text/plain"
             }
         };
 
@@ -131,19 +132,23 @@ export class Client {
         });
     }
 
-    protected processComponentPUT(response: Response): Promise<void> {
+    protected processComponentPUT(response: Response): Promise<boolean> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<boolean>(null as any);
     }
 
     /**
@@ -188,6 +193,49 @@ export class Client {
             });
         }
         return Promise.resolve<ComponentModel[]>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    storage(body: StoreComponent | undefined): Promise<boolean> {
+        let url_ = this.baseUrl + "/Storage";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processStorage(_response);
+        });
+    }
+
+    protected processStorage(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
     }
 
     /**
@@ -360,6 +408,58 @@ export class LoginUser implements ILoginUser {
 export interface ILoginUser {
     username?: string | undefined;
     password?: string | undefined;
+}
+
+export class StoreComponent implements IStoreComponent {
+    row?: number;
+    column?: number;
+    level?: number;
+    name?: string | undefined;
+    quantity?: number;
+
+    constructor(data?: IStoreComponent) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.row = _data["row"];
+            this.column = _data["column"];
+            this.level = _data["level"];
+            this.name = _data["name"];
+            this.quantity = _data["quantity"];
+        }
+    }
+
+    static fromJS(data: any): StoreComponent {
+        data = typeof data === 'object' ? data : {};
+        let result = new StoreComponent();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["row"] = this.row;
+        data["column"] = this.column;
+        data["level"] = this.level;
+        data["name"] = this.name;
+        data["quantity"] = this.quantity;
+        return data;
+    }
+}
+
+export interface IStoreComponent {
+    row?: number;
+    column?: number;
+    level?: number;
+    name?: string | undefined;
+    quantity?: number;
 }
 
 export class User implements IUser {

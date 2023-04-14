@@ -21,8 +21,7 @@ namespace rendszerfejlesztes_beadando.Controllers
         public async Task<ActionResult<bool>> Post([FromBody] User user)
         {
             var result = await repo.Add(user);
-            if (result) return true;
-            else return false;
+            return Ok(result);
         }
     }
 }

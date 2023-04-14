@@ -19,14 +19,14 @@ namespace rendszerfejlesztes_beadando.BusinessLogic
         // akkor visszaadja a jogosultságát, ha pedig nem akkor egy üres objektumot ad vissza
         public async Task<UserRole> Login(LoginUser user)
         {
-            var authUser = await userManager.FindByNameAsync(user.username);
+            var authUser = await userManager.FindByNameAsync(user.Username);
 
             if (authUser == null)
             {
                 return new UserRole();
             }
 
-            var result = await userManager.CheckPasswordAsync(authUser, user.password);
+            var result = await userManager.CheckPasswordAsync(authUser, user.Password);
 
             if (result)
             {

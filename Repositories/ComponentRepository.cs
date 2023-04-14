@@ -32,17 +32,18 @@ namespace rendszerfejlesztes_beadando.Repositories
         // Megnézi, hogy az alkatrész szerepel-e az adatbázisba és ha szerepel akkor 
         // megváltoztatja az árát annak az alkatrésznek és elmenti, ha pedig nem akkor
         // dob egy exceptiont
-        public async Task Update(string name, int price)
+        public async Task<bool> Update(string name, int price)
         {
             var component = _context.Components.FirstOrDefault(p => p.Name == name);
 
             if (component == null)
             {
-                throw new Exception();
+                return false;
             }
 
             component.Price = price;
             await _context.SaveChangesAsync();
+            return true;
         }
 
         // Visszaadja az összes alkatrészt az adatbázisból lista formájában
