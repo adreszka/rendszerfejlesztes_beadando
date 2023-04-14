@@ -104,25 +104,20 @@ export class Client {
     }
 
     /**
-     * @param name (optional) 
-     * @param price (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    componentPUT(name: string | undefined, price: number | undefined): Promise<boolean> {
-        let url_ = this.baseUrl + "/Component?";
-        if (name === null)
-            throw new Error("The parameter 'name' cannot be null.");
-        else if (name !== undefined)
-            url_ += "name=" + encodeURIComponent("" + name) + "&";
-        if (price === null)
-            throw new Error("The parameter 'price' cannot be null.");
-        else if (price !== undefined)
-            url_ += "price=" + encodeURIComponent("" + price) + "&";
+    componentPUT(body: ComponentModel | undefined): Promise<boolean> {
+        let url_ = this.baseUrl + "/Component";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_: RequestInit = {
+            body: content_,
             method: "PUT",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "text/plain"
             }
         };
