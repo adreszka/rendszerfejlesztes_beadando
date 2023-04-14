@@ -5,17 +5,17 @@ import { Client } from "../ApiServices.ts";
 export function Manager() {
     var client = new Client();
     const [elements, setElements] = useState([]);
-    var flag = 0;
+    const flag = null;
 
     useEffect(() => {
         getElements();
     },[flag])
 
-    const addComponent = (event) => {
+    const addComponent = async (event) => {
         event.preventDefault();
         const data = new FormData(event.target);
 
-        client.componentPOST({
+        await client.componentPOST({
             "name": data.get('name'),
             "price": data.get('price'),
             "maxCapacity": data.get('maxAmount')
@@ -27,36 +27,39 @@ export function Manager() {
             }
         }).catch((error) => { console.log(error) });
 
-        flag++;
+        getElements();
         listElements();
     }
 
     const getElements = async () => {
         await client.componentAll().then((val) => {
             setElements(val);
+            console.log(val);
+            listElements();
         }).catch((error) => console.log(error));
     }
 
     const listElements = () => {
-        var result = new Array(<option value="choose" >Choose a component</option>);
+        var result = new Array(<option key="choose" value="choose" >Choose a component</option>);
 
         result = result.concat(elements.map((temp) => {
             var name = temp['name'];
 
-            return <option value={name} >{name}</option>;
+            return <option key={name} value={name} >{name}</option>;
         }));
 
         return result;
     }
 
-    const updateComponents = (event) => {
+    const updateComponent = (event) => {
         event.preventDefault();
         const data = new FormData(event.target);
 
         if (document.getElementById('list').value != "choose") {
             client.componentPUT({
-                "name": String(data.get('list')),
-                "price": parseInt(data.get('newPrice'))
+                "name": data.get('list'),
+                "price": data.get('newPrice'),
+                "maxCapacity": 0
             }).then((val) => {
                 if (val) {
                     window.alert("The price of the component was successfully changed!");
@@ -66,11 +69,13 @@ export function Manager() {
             }).catch((error) => { console.log(error) });
         }
 
-        flag++
+        getElements();
         listElements();
     };
 
     const setCurrentComponent = (option) => {
+        getElements();
+
         if (option.target.value != "choose") {
             document.getElementById('currentPrice').value = elements.find((temp) => { return temp['name'] == option.target.value })['price'];
         } else {
@@ -106,7 +111,7 @@ export function Manager() {
                         <td>
                             <div className="bg">
                                 <h1>Update component</h1>
-                                <form onSubmit={updateComponents}>
+                                <form onSubmit={updateComponent}>
                                     <select className="list" id="list" name="list" onChange={setCurrentComponent}>
                                         {listElements()}
                                     </select><br></br>
