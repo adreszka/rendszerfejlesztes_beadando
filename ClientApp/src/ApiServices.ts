@@ -194,7 +194,7 @@ export class Client {
      * @param body (optional) 
      * @return Success
      */
-    storage(body: StoreComponent | undefined): Promise<boolean> {
+    storage(body: StoreComponent | undefined): Promise<number> {
         let url_ = this.baseUrl + "/Storage";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -214,7 +214,7 @@ export class Client {
         });
     }
 
-    protected processStorage(response: Response): Promise<boolean> {
+    protected processStorage(response: Response): Promise<number> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -230,7 +230,7 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<boolean>(null as any);
+        return Promise.resolve<number>(null as any);
     }
 
     /**
@@ -406,9 +406,6 @@ export interface ILoginUser {
 }
 
 export class StoreComponent implements IStoreComponent {
-    row?: number;
-    column?: number;
-    level?: number;
     name?: string | undefined;
     quantity?: number;
 
@@ -423,9 +420,6 @@ export class StoreComponent implements IStoreComponent {
 
     init(_data?: any) {
         if (_data) {
-            this.row = _data["row"];
-            this.column = _data["column"];
-            this.level = _data["level"];
             this.name = _data["name"];
             this.quantity = _data["quantity"];
         }
@@ -440,9 +434,6 @@ export class StoreComponent implements IStoreComponent {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["row"] = this.row;
-        data["column"] = this.column;
-        data["level"] = this.level;
         data["name"] = this.name;
         data["quantity"] = this.quantity;
         return data;
@@ -450,9 +441,6 @@ export class StoreComponent implements IStoreComponent {
 }
 
 export interface IStoreComponent {
-    row?: number;
-    column?: number;
-    level?: number;
     name?: string | undefined;
     quantity?: number;
 }

@@ -12,7 +12,7 @@ namespace rendszerfejlesztes_beadando.Repositories
         }
 
         // Eltárolja az adatbázisban az alkatrészt
-        public async Task<bool> StoreComponent(StoreComponent parameters)
+        public async Task<int> StoreComponent(StoreComponent parameters)
         {
             var comp = _context.Components.FirstOrDefault(c =>
                             c.Name == parameters.Name);
@@ -85,10 +85,10 @@ namespace rendszerfejlesztes_beadando.Repositories
 
             if (quantity > 0) 
             {
-                return false;
+                return quantity;
             }
 
-            return true;
+            return quantity;
         }
     }
 }

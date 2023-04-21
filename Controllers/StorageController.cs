@@ -17,7 +17,7 @@ namespace rendszerfejlesztes_beadando.Controllers
 
         // Alkatrész tárolását végzi az endpoint hogy melyik rekeszbe tároljuk
         [HttpPut]
-        public async Task<ActionResult<bool>> Put([FromBody] StoreComponent parameters)
+        public async Task<ActionResult<int>> Put([FromBody] StoreComponent parameters)
         {
             var result = await repo.StoreComponent(parameters);
             return Ok(result);
