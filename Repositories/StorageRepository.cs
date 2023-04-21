@@ -57,6 +57,11 @@ namespace rendszerfejlesztes_beadando.Repositories
                 if (componentIsStored) break;
             }
 
+            if (!componentIsStored) 
+            {
+                return false;
+            }
+
             await _context.SaveChangesAsync();
             return true;
         }
