@@ -28,13 +28,11 @@ export function Manager() {
         }).catch((error) => { console.log(error) });
 
         getElements();
-        listElements();
     }
 
     const getElements = async () => {
         await client.componentAll().then((val) => {
             setElements(val);
-            console.log(val);
             listElements();
         }).catch((error) => console.log(error));
     }
@@ -55,9 +53,9 @@ export function Manager() {
         event.preventDefault();
         const data = new FormData(event.target);
 
-        if (document.getElementById('list').value != "choose") {
+        if (document.getElementById('listUpdate').value != "choose") {
             client.componentPUT({
-                "name": data.get('list'),
+                "name": data.get('listUpdate'),
                 "price": data.get('newPrice'),
                 "maxCapacity": 0
             }).then((val) => {
@@ -70,16 +68,34 @@ export function Manager() {
         }
 
         getElements();
-        listElements();
     };
 
-    const setCurrentComponent = (option) => {
+    const setCurrentComponentOnUpdate = (option) => {
         getElements();
 
         if (option.target.value != "choose") {
             document.getElementById('currentPrice').value = elements.find((temp) => { return temp['name'] == option.target.value })['price'];
         } else {
             document.getElementById('currentPrice').value = "";
+        }
+    };
+
+    //store component
+    const storeComponent = async (event) => {
+        event.preventDefault();
+        const data = new FormData(event.target);
+
+        if (data.get('listStore') != "choose") {
+            client.storage({
+                "name": data.get('listStore'),
+                "quantity": data.get('amountToStore')
+            }).then((val) => {
+                if (val == 0) {
+                    window.alert("All the componenets have been stored in the warehouse!");
+                } else {
+                    window.alert("There hasn't been enough space for all the components!\nRemained components: " + val);
+                }
+            }).catch((error) => { console.log(error) });
         }
     };
 
@@ -112,7 +128,7 @@ export function Manager() {
                             <div className="bg">
                                 <h1>Update component</h1>
                                 <form onSubmit={updateComponent}>
-                                    <select className="list" id="list" name="list" onChange={setCurrentComponent}>
+                                    <select className="list" id="listUpdate" name="listUpdate" onChange={setCurrentComponentOnUpdate}>
                                         {listElements()}
                                     </select><br></br>
                                     <fieldset className="input-field">
@@ -124,6 +140,21 @@ export function Manager() {
                                         <input type="number" id="newPrice" name="newPrice" min="0"></input>
                                     </fieldset>
                                     <button>Update</button>
+                                </form>
+                            </div>
+                        </td>
+                        <td>
+                            <div className="bg">
+                                <h1>Store component</h1>
+                                <form onSubmit={storeComponent}>
+                                    <select className="list" id="listStore" name="listStore">
+                                        {listElements()}
+                                    </select><br></br>
+                                    <fieldset className="input-field">
+                                        <legend>Amount:</legend>
+                                        <input type="number" id="amountToStore" name="amountToStore" min="0"></input>
+                                    </fieldset>
+                                    <button>Store</button>
                                 </form>
                             </div>
                         </td>
