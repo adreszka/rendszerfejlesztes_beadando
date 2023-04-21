@@ -17,7 +17,7 @@ namespace rendszerfejlesztes_beadando.Repositories
             var comp = _context.Components.FirstOrDefault(c =>
                             c.Name == parameters.Name);
             int storedQuantity;
-            bool componentIsStored = false;
+            int quantity = parameters.Quantity;
             for (int i = 1; i <= 10; i++)
             { 
                 for (int j = 1; j <= 4; j++)
@@ -35,34 +35,59 @@ namespace rendszerfejlesztes_beadando.Repositories
                         {
                             storedQuantity = (int)storage.Quantity;
                         }
-                        if (storedQuantity + parameters.Quantity > comp.MaxCapacity)
-                        {
-                            continue;
-                        }
                         if (storage.ComponentId == null)
                         {
-                            storage.ComponentId = comp.Id;
-                            storage.Quantity = storedQuantity + parameters.Quantity;
-                            componentIsStored = true;
+                            if (storedQuantity + quantity > comp.MaxCapacity && storedQuantity == 0)
+                            {
+                                storage.ComponentId = comp.Id;
+                                storage.Quantity = comp.MaxCapacity;
+                                quantity -= comp.MaxCapacity;
+                            }
+                            else if (storedQuantity + quantity > comp.MaxCapacity && storedQuantity != 0) 
+                            {
+                                storage.ComponentId = comp.Id;
+                                storage.Quantity = comp.MaxCapacity;
+                                quantity -= comp.MaxCapacity - storedQuantity;
+                            }
+                            else
+                            {
+                                storage.ComponentId = comp.Id;
+                                storage.Quantity = storedQuantity + quantity;
+                                quantity = 0;
+                            }
                         }
                         else 
                         {
-                            storage.Quantity = parameters.Quantity + storedQuantity;
-                            componentIsStored = true;
+                            if (storedQuantity + quantity > comp.MaxCapacity && storedQuantity == 0)
+                            {
+                                storage.Quantity = comp.MaxCapacity;
+                                quantity -= comp.MaxCapacity;
+                            }
+                            else if (storedQuantity + quantity > comp.MaxCapacity && storedQuantity != 0)
+                            {
+                                storage.Quantity = comp.MaxCapacity;
+                                quantity -= comp.MaxCapacity - storedQuantity;
+                            }
+                            else
+                            {
+                                storage.Quantity = quantity + storedQuantity;
+                                quantity = 0;
+                            }
                         }
-                        if (componentIsStored) break;
+                        if (quantity == 0) break;
                     }
-                    if (componentIsStored) break;
+                    if (quantity == 0) break;
                 }
-                if (componentIsStored) break;
+                if (quantity == 0) break;
             }
 
-            if (!componentIsStored) 
+            await _context.SaveChangesAsync();
+
+            if (quantity > 0) 
             {
                 return false;
             }
 
-            await _context.SaveChangesAsync();
             return true;
         }
     }
