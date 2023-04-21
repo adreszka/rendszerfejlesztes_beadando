@@ -15,6 +15,7 @@ namespace rendszerfejlesztes_beadando.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<Project> Projects { get; set; }
+        public DbSet<ProjectComponent> ProjectsComponents { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Models.Entities.Storage> Storage { get; set; }
 

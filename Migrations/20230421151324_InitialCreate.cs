@@ -74,8 +74,7 @@ namespace rendszerfejlesztes_beadando.Migrations
                         name: "FK_Storage_Components_ComponentId",
                         column: x => x.ComponentId,
                         principalTable: "Components",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -86,7 +85,10 @@ namespace rendszerfejlesztes_beadando.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CustomerId = table.Column<int>(type: "int", nullable: false)
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    WorkTime = table.Column<int>(type: "int", nullable: true),
+                    Fee = table.Column<int>(type: "int", nullable: true),
+                    ComponentsPrices = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -126,6 +128,33 @@ namespace rendszerfejlesztes_beadando.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ProjectsComponents",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProjectId = table.Column<int>(type: "int", nullable: false),
+                    ComponentId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjectsComponents", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProjectsComponents_Components_ComponentId",
+                        column: x => x.ComponentId,
+                        principalTable: "Components",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProjectsComponents_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Components_Name",
                 table: "Components",
@@ -160,6 +189,16 @@ namespace rendszerfejlesztes_beadando.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProjectsComponents_ComponentId",
+                table: "ProjectsComponents",
+                column: "ComponentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProjectsComponents_ProjectId",
+                table: "ProjectsComponents",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Statuses_Name",
                 table: "Statuses",
                 column: "Name",
@@ -184,13 +223,16 @@ namespace rendszerfejlesztes_beadando.Migrations
                 name: "Logs");
 
             migrationBuilder.DropTable(
+                name: "ProjectsComponents");
+
+            migrationBuilder.DropTable(
                 name: "Storage");
 
             migrationBuilder.DropTable(
-                name: "Projects");
+                name: "Statuses");
 
             migrationBuilder.DropTable(
-                name: "Statuses");
+                name: "Projects");
 
             migrationBuilder.DropTable(
                 name: "Components");

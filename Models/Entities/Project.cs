@@ -10,5 +10,8 @@ namespace rendszerfejlesztes_beadando.Models.Entities
         public string Description { get; set; }
         public int CustomerId { get; set; }
         public Customer Customer { get; set; }
+        public int? WorkTime { get; set; }
+        public int? Fee { get; set; }
+        public int? ComponentsPrices { get; set; }
     }
 }

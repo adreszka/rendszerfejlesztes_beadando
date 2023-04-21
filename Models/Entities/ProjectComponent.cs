@@ -2,15 +2,15 @@
 
 namespace rendszerfejlesztes_beadando.Models.Entities
 {
-    public class Storage
+    public class ProjectComponent
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public int Row { get; set; }
-        public int Columnn { get; set; }
-        public int Level { get; set; }
-        public int? ComponentId { get; set; }
+        public int ProjectId { get; set; }
+        public Project Project { get; set; }
+        public int ComponentId { get; set; }
         public Component Component { get; set; }
-        public int? Quantity { get; set; }
+        public int Quantity { get; set; }
+
     }
 }

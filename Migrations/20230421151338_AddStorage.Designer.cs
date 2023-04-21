@@ -12,8 +12,8 @@ using rendszerfejlesztes_beadando.Data;
 namespace rendszerfejlesztes_beadando.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230413141523_AddStatuses")]
-    partial class AddStatuses
+    [Migration("20230421151338_AddStorage")]
+    partial class AddStorage
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,7 +70,7 @@ namespace rendszerfejlesztes_beadando.Migrations
                     b.Property<int>("PhoneNumber")
                         .HasColumnType("int");
 
-                    b.Property<int>("TaxNumber")
+                    b.Property<int?>("TaxNumber")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -118,6 +118,9 @@ namespace rendszerfejlesztes_beadando.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ComponentsPrices")
+                        .HasColumnType("int");
+
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
@@ -125,15 +128,47 @@ namespace rendszerfejlesztes_beadando.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("Fee")
+                        .HasColumnType("int");
+
                     b.Property<string>("Location")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("WorkTime")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Entities.ProjectComponent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ComponentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ComponentId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectsComponents");
                 });
 
             modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Entities.Status", b =>
@@ -167,13 +202,13 @@ namespace rendszerfejlesztes_beadando.Migrations
                     b.Property<int>("Columnn")
                         .HasColumnType("int");
 
-                    b.Property<int>("ComponentId")
+                    b.Property<int?>("ComponentId")
                         .HasColumnType("int");
 
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
+                    b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<int>("Row")
@@ -219,13 +254,30 @@ namespace rendszerfejlesztes_beadando.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Entities.Storage", b =>
+            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Entities.ProjectComponent", b =>
                 {
                     b.HasOne("rendszerfejlesztes_beadando.Models.Entities.Component", "Component")
                         .WithMany()
                         .HasForeignKey("ComponentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("rendszerfejlesztes_beadando.Models.Entities.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Component");
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Entities.Storage", b =>
+                {
+                    b.HasOne("rendszerfejlesztes_beadando.Models.Entities.Component", "Component")
+                        .WithMany()
+                        .HasForeignKey("ComponentId");
 
                     b.Navigation("Component");
                 });
