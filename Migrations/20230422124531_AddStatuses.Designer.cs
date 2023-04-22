@@ -12,8 +12,8 @@ using rendszerfejlesztes_beadando.Data;
 namespace rendszerfejlesztes_beadando.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230421151338_AddStorage")]
-    partial class AddStorage
+    [Migration("20230422124531_AddStatuses")]
+    partial class AddStatuses
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,11 +67,12 @@ namespace rendszerfejlesztes_beadando.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PhoneNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("TaxNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("TaxNumber")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
