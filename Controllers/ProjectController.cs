@@ -15,6 +15,7 @@ namespace rendszerfejlesztes_beadando.Controllers
             this.repo = repo;
         }
 
+        [HttpPost]
         public async Task<ActionResult<bool>> addNewProject([FromBody] NewProject project) 
         {
             var result = await repo.addNewProject(project);
