@@ -49,6 +49,15 @@ namespace rendszerfejlesztes_beadando.Repositories
                 CustomerId = customer.Id,
             };
             _context.Add(project);
+
+            var p = _context.Projects.FirstOrDefault(p => p.Location == parameters.Location);
+            var statuses = _context.Statuses.FirstOrDefault(s => s.Name == "New");
+            var status = new Status
+            {
+                Id = statuses.Id,
+                Name = statuses.Name,
+            };
+            _context.Add(status);
             await _context.SaveChangesAsync();
 
             return true;
