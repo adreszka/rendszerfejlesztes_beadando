@@ -10,6 +10,8 @@ namespace rendszerfejlesztes_beadando
         {
             CreateMap<Component, ComponentModel>();
             CreateMap<ComponentModel, Component>();
+            CreateMap<ProjectComponent, ProjectComponentModel>();
+            CreateMap<ProjectComponentModel, ProjectComponent>();
         }
     }
 }
