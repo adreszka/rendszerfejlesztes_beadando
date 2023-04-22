@@ -194,8 +194,8 @@ export class Client {
      * @param body (optional) 
      * @return Success
      */
-    project(body: NewProject | undefined): Promise<boolean> {
-        let url_ = this.baseUrl + "/Project";
+    addNewProject(body: NewProject | undefined): Promise<boolean> {
+        let url_ = this.baseUrl + "/Project/addNewProject";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -210,11 +210,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processProject(_response);
+            return this.processAddNewProject(_response);
         });
     }
 
-    protected processProject(response: Response): Promise<boolean> {
+    protected processAddNewProject(response: Response): Promise<boolean> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -231,6 +231,180 @@ export class Client {
             });
         }
         return Promise.resolve<boolean>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    addWorkTimeAndFee(body: WorkTimeAndFee | undefined): Promise<boolean> {
+        let url_ = this.baseUrl + "/Project/AddWorkTimeAndFee";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAddWorkTimeAndFee(_response);
+        });
+    }
+
+    protected processAddWorkTimeAndFee(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    addComponentToProject(body: AddComponentToProject | undefined): Promise<boolean> {
+        let url_ = this.baseUrl + "/Project/AddComponentToProject";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAddComponentToProject(_response);
+        });
+    }
+
+    protected processAddComponentToProject(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    getProjects(): Promise<Project[]> {
+        let url_ = this.baseUrl + "/Project/GetProjects";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetProjects(_response);
+        });
+    }
+
+    protected processGetProjects(response: Response): Promise<Project[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Project.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Project[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    getProjectComponents(): Promise<ProjectComponent[]> {
+        let url_ = this.baseUrl + "/Project/GetProjectComponents";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetProjectComponents(_response);
+        });
+    }
+
+    protected processGetProjectComponents(response: Response): Promise<ProjectComponent[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ProjectComponent.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ProjectComponent[]>(null as any);
     }
 
     /**
@@ -364,6 +538,98 @@ export class Client {
     }
 }
 
+export class AddComponentToProject implements IAddComponentToProject {
+    location?: string | undefined;
+    name?: string | undefined;
+    quantity?: number;
+
+    constructor(data?: IAddComponentToProject) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.location = _data["location"];
+            this.name = _data["name"];
+            this.quantity = _data["quantity"];
+        }
+    }
+
+    static fromJS(data: any): AddComponentToProject {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddComponentToProject();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["location"] = this.location;
+        data["name"] = this.name;
+        data["quantity"] = this.quantity;
+        return data;
+    }
+}
+
+export interface IAddComponentToProject {
+    location?: string | undefined;
+    name?: string | undefined;
+    quantity?: number;
+}
+
+export class Component implements IComponent {
+    id?: number;
+    name?: string | undefined;
+    price?: number;
+    maxCapacity?: number;
+
+    constructor(data?: IComponent) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.price = _data["price"];
+            this.maxCapacity = _data["maxCapacity"];
+        }
+    }
+
+    static fromJS(data: any): Component {
+        data = typeof data === 'object' ? data : {};
+        let result = new Component();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["price"] = this.price;
+        data["maxCapacity"] = this.maxCapacity;
+        return data;
+    }
+}
+
+export interface IComponent {
+    id?: number;
+    name?: string | undefined;
+    price?: number;
+    maxCapacity?: number;
+}
+
 export class ComponentModel implements IComponentModel {
     name?: string | undefined;
     price?: number;
@@ -406,6 +672,58 @@ export interface IComponentModel {
     name?: string | undefined;
     price?: number;
     maxCapacity?: number;
+}
+
+export class Customer implements ICustomer {
+    id?: number;
+    name?: string | undefined;
+    phoneNumber?: string | undefined;
+    email?: string | undefined;
+    taxNumber?: string | undefined;
+
+    constructor(data?: ICustomer) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.phoneNumber = _data["phoneNumber"];
+            this.email = _data["email"];
+            this.taxNumber = _data["taxNumber"];
+        }
+    }
+
+    static fromJS(data: any): Customer {
+        data = typeof data === 'object' ? data : {};
+        let result = new Customer();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["phoneNumber"] = this.phoneNumber;
+        data["email"] = this.email;
+        data["taxNumber"] = this.taxNumber;
+        return data;
+    }
+}
+
+export interface ICustomer {
+    id?: number;
+    name?: string | undefined;
+    phoneNumber?: string | undefined;
+    email?: string | undefined;
+    taxNumber?: string | undefined;
 }
 
 export class LoginUser implements ILoginUser {
@@ -502,6 +820,126 @@ export interface INewProject {
     taxNumber?: string | undefined;
     location?: string | undefined;
     description?: string | undefined;
+}
+
+export class Project implements IProject {
+    id?: number;
+    location?: string | undefined;
+    description?: string | undefined;
+    customerId?: number;
+    customer?: Customer;
+    workTime?: number | undefined;
+    fee?: number | undefined;
+    componentsPrices?: number | undefined;
+
+    constructor(data?: IProject) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.location = _data["location"];
+            this.description = _data["description"];
+            this.customerId = _data["customerId"];
+            this.customer = _data["customer"] ? Customer.fromJS(_data["customer"]) : <any>undefined;
+            this.workTime = _data["workTime"];
+            this.fee = _data["fee"];
+            this.componentsPrices = _data["componentsPrices"];
+        }
+    }
+
+    static fromJS(data: any): Project {
+        data = typeof data === 'object' ? data : {};
+        let result = new Project();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["location"] = this.location;
+        data["description"] = this.description;
+        data["customerId"] = this.customerId;
+        data["customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["workTime"] = this.workTime;
+        data["fee"] = this.fee;
+        data["componentsPrices"] = this.componentsPrices;
+        return data;
+    }
+}
+
+export interface IProject {
+    id?: number;
+    location?: string | undefined;
+    description?: string | undefined;
+    customerId?: number;
+    customer?: Customer;
+    workTime?: number | undefined;
+    fee?: number | undefined;
+    componentsPrices?: number | undefined;
+}
+
+export class ProjectComponent implements IProjectComponent {
+    id?: number;
+    projectId?: number;
+    project?: Project;
+    componentId?: number;
+    component?: Component;
+    quantity?: number;
+
+    constructor(data?: IProjectComponent) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.projectId = _data["projectId"];
+            this.project = _data["project"] ? Project.fromJS(_data["project"]) : <any>undefined;
+            this.componentId = _data["componentId"];
+            this.component = _data["component"] ? Component.fromJS(_data["component"]) : <any>undefined;
+            this.quantity = _data["quantity"];
+        }
+    }
+
+    static fromJS(data: any): ProjectComponent {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProjectComponent();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["projectId"] = this.projectId;
+        data["project"] = this.project ? this.project.toJSON() : <any>undefined;
+        data["componentId"] = this.componentId;
+        data["component"] = this.component ? this.component.toJSON() : <any>undefined;
+        data["quantity"] = this.quantity;
+        return data;
+    }
+}
+
+export interface IProjectComponent {
+    id?: number;
+    projectId?: number;
+    project?: Project;
+    componentId?: number;
+    component?: Component;
+    quantity?: number;
 }
 
 export class StoreComponent implements IStoreComponent {
@@ -670,6 +1108,50 @@ export interface IWeatherForecast {
     temperatureC?: number;
     temperatureF?: number;
     summary?: string | undefined;
+}
+
+export class WorkTimeAndFee implements IWorkTimeAndFee {
+    worktime?: number;
+    fee?: number;
+    location?: string | undefined;
+
+    constructor(data?: IWorkTimeAndFee) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.worktime = _data["worktime"];
+            this.fee = _data["fee"];
+            this.location = _data["location"];
+        }
+    }
+
+    static fromJS(data: any): WorkTimeAndFee {
+        data = typeof data === 'object' ? data : {};
+        let result = new WorkTimeAndFee();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["worktime"] = this.worktime;
+        data["fee"] = this.fee;
+        data["location"] = this.location;
+        return data;
+    }
+}
+
+export interface IWorkTimeAndFee {
+    worktime?: number;
+    fee?: number;
+    location?: string | undefined;
 }
 
 export class ApiException extends Error {
