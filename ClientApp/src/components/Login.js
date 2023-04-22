@@ -18,13 +18,12 @@ export function Login() {
             "password": data.get('pass')
         }).then((val) => {
             console.log(val);
-            if(val['role'] == "WarehouseManager")
+            if(val['role'] === "WarehouseManager")
                 navigate('/manager');
-            if (val['role'] == "Administrator") {
+            if (val['role'] === "Administrator") {
                 navigate('/admin');
-                console.log("adsdf");
             }
-            if(val['role'] == null)
+            if(val['role'] === null)
                 window.alert("Invalid username or password!");
         })
         .catch((error) => { console.log(error) });

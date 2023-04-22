@@ -194,6 +194,49 @@ export class Client {
      * @param body (optional) 
      * @return Success
      */
+    project(body: NewProject | undefined): Promise<boolean> {
+        let url_ = this.baseUrl + "/Project";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processProject(_response);
+        });
+    }
+
+    protected processProject(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
     storage(body: StoreComponent | undefined): Promise<number> {
         let url_ = this.baseUrl + "/Storage";
         url_ = url_.replace(/[?&]$/, "");
@@ -403,6 +446,62 @@ export class LoginUser implements ILoginUser {
 export interface ILoginUser {
     username?: string | undefined;
     password?: string | undefined;
+}
+
+export class NewProject implements INewProject {
+    name?: string | undefined;
+    phoneNumber?: string | undefined;
+    email?: string | undefined;
+    taxNumber?: string | undefined;
+    location?: string | undefined;
+    description?: string | undefined;
+
+    constructor(data?: INewProject) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.phoneNumber = _data["phoneNumber"];
+            this.email = _data["email"];
+            this.taxNumber = _data["taxNumber"];
+            this.location = _data["location"];
+            this.description = _data["description"];
+        }
+    }
+
+    static fromJS(data: any): NewProject {
+        data = typeof data === 'object' ? data : {};
+        let result = new NewProject();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["phoneNumber"] = this.phoneNumber;
+        data["email"] = this.email;
+        data["taxNumber"] = this.taxNumber;
+        data["location"] = this.location;
+        data["description"] = this.description;
+        return data;
+    }
+}
+
+export interface INewProject {
+    name?: string | undefined;
+    phoneNumber?: string | undefined;
+    email?: string | undefined;
+    taxNumber?: string | undefined;
+    location?: string | undefined;
+    description?: string | undefined;
 }
 
 export class StoreComponent implements IStoreComponent {

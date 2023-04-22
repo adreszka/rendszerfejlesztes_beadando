@@ -38,7 +38,7 @@ export function Manager() {
     }
 
     const listElements = () => {
-        var result = new Array(<option key="choose" value="choose" >Choose a component</option>);
+        var result = new Array();
 
         result = result.concat(elements.map((temp) => {
             var name = temp['name'];
@@ -53,7 +53,7 @@ export function Manager() {
         event.preventDefault();
         const data = new FormData(event.target);
 
-        if (document.getElementById('listUpdate').value != "choose") {
+        if (document.getElementById('listUpdate').value !== "choose") {
             client.componentPUT({
                 "name": data.get('listUpdate'),
                 "price": data.get('newPrice'),
@@ -62,7 +62,7 @@ export function Manager() {
                 if (val) {
                     window.alert("The price of the component was successfully changed!");
                 } else {
-                    window.alert("An error occurred during the change of the price!");
+                    window.alert("An error occured during the change of the price!");
                 }
             }).catch((error) => { console.log(error) });
         }
@@ -73,8 +73,8 @@ export function Manager() {
     const setCurrentComponentOnUpdate = (option) => {
         getElements();
 
-        if (option.target.value != "choose") {
-            document.getElementById('currentPrice').value = elements.find((temp) => { return temp['name'] == option.target.value })['price'];
+        if (option.target.value !== "choose") {
+            document.getElementById('currentPrice').value = elements.find((temp) => { return temp['name'] === option.target.value })['price'];
         } else {
             document.getElementById('currentPrice').value = "";
         }
@@ -85,12 +85,12 @@ export function Manager() {
         event.preventDefault();
         const data = new FormData(event.target);
 
-        if (data.get('listStore') != "choose") {
+        if (data.get('listStore') !== "choose") {
             client.storage({
                 "name": data.get('listStore'),
                 "quantity": data.get('amountToStore')
             }).then((val) => {
-                if (val == 0) {
+                if (val === 0) {
                     window.alert("All the componenets have been stored in the warehouse!");
                 } else {
                     window.alert("There hasn't been enough space for all the components!\nRemained components: " + val);
@@ -121,7 +121,7 @@ export function Manager() {
                                         <input type="number" id="maxAmount" min="0" name="maxAmount"></input>
                                     </fieldset>
                                     <button>Add</button>
-                                    </form>
+                                </form>
                             </div>
                         </td>
                         <td>

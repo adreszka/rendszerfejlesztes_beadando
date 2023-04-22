@@ -1,6 +1,7 @@
 import { Login } from "./components/Login";
 import { Admin } from "./components/Admin";
 import { Manager } from "./components/Manager";
+import { Specialist } from "./components/Specialist";
 
 const AppRoutes = [
     {
@@ -18,6 +19,10 @@ const AppRoutes = [
     {
         path: "/manager",
         element: <Manager />
+    },
+    {
+        path: "/specialist",
+        element: <Specialist />
     }
 ];
 

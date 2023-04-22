@@ -4,22 +4,22 @@ import { Link } from 'react-router-dom';
 import './NavMenu.css';
 
 export class NavMenu extends Component {
-  static displayName = NavMenu.name;
+    static displayName = NavMenu.name;
 
-  constructor (props) {
-    super(props);
+    constructor (props) {
+        super(props);
 
-    this.toggleNavbar = this.toggleNavbar.bind(this);
-    this.state = {
-      collapsed: true
-    };
-  }
+        this.toggleNavbar = this.toggleNavbar.bind(this);
+        this.state = {
+            collapsed: true
+        };
+    }
 
-  toggleNavbar () {
-    this.setState({
-      collapsed: !this.state.collapsed
-    });
-  }
+    toggleNavbar () {
+        this.setState({
+            collapsed: !this.state.collapsed
+        });
+    }
 
     render() {
         return (
@@ -37,6 +37,9 @@ export class NavMenu extends Component {
                             </NavItem>
                             <NavItem>
                                 <NavLink tag={Link} className="text-dark" to="/manager">Manager</NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink tag={Link} className="text-dark" to="/specialist">Specialist</NavLink>
                             </NavItem>
                         </ul>
                     </Collapse>
