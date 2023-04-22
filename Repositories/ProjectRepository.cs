@@ -52,12 +52,12 @@ namespace rendszerfejlesztes_beadando.Repositories
 
             var p = _context.Projects.FirstOrDefault(p => p.Location == parameters.Location);
             var statuses = _context.Statuses.FirstOrDefault(s => s.Name == "New");
-            var status = new Status
+            var log = new Log
             {
-                Id = statuses.Id,
-                Name = statuses.Name,
+                ProjectId = project.Id,
+                StatusId = statuses.Id,
             };
-            _context.Add(status);
+            _context.Add(log);
             await _context.SaveChangesAsync();
 
             return true;
