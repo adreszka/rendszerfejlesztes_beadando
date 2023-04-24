@@ -43,5 +43,12 @@ namespace rendszerfejlesztes_beadando.Controllers
             var result = await repo.GetAll();
             return Ok(result.Select(mapper.Map<ComponentModel>));
         }
+
+        [HttpGet("{componentName}")]
+        public async Task<ActionResult<AvailableComponent>> GetAvailableComponent(string componentName)
+        {
+            var result = await repo.GetAvailableComponent(componentName);
+            return Ok(result);
+        }
     }
 }

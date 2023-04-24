@@ -52,5 +52,38 @@ namespace rendszerfejlesztes_beadando.Repositories
         {
             return await _context.Components.ToListAsync();
         }
+
+        public async Task<AvailableComponent> GetAvailableComponent(string componentName)
+        {
+            int componentQuantityInStorage = 0;
+            int reservedComponentQuantity = 0;
+            var component = await _context.Components.FirstAsync(p => p.Name == componentName);
+            var storage = await _context.Storage.ToListAsync();
+            foreach (var row in storage)
+            {
+                if (row.ComponentId == null)
+                {
+                    break;
+                }
+                if (row.ComponentId == component.Id)
+                {
+                    componentQuantityInStorage += (int)row.Quantity;
+                }
+            }
+            var reserved = await _context.ProjectsComponents.ToListAsync();
+            foreach (var r in reserved)
+            {
+                if (r.ComponentId == component.Id)
+                {
+                    reservedComponentQuantity += (int)r.Quantity;
+                }
+            }
+            var availableComponent = new AvailableComponent
+            {
+                Price = component.Price,
+                AvailableQuantity = componentQuantityInStorage - reservedComponentQuantity,
+            };
+            return availableComponent;
+        }
     }
 }
