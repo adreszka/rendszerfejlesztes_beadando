@@ -64,8 +64,8 @@ export class Client {
      * @param body (optional) 
      * @return Success
      */
-    componentPOST(body: ComponentModel | undefined): Promise<boolean> {
-        let url_ = this.baseUrl + "/Component";
+    addNewComponent(body: ComponentModel | undefined): Promise<boolean> {
+        let url_ = this.baseUrl + "/Component/AddNewComponent";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -80,11 +80,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processComponentPOST(_response);
+            return this.processAddNewComponent(_response);
         });
     }
 
-    protected processComponentPOST(response: Response): Promise<boolean> {
+    protected processAddNewComponent(response: Response): Promise<boolean> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -107,8 +107,8 @@ export class Client {
      * @param body (optional) 
      * @return Success
      */
-    componentPUT(body: ComponentModel | undefined): Promise<boolean> {
-        let url_ = this.baseUrl + "/Component";
+    updateComponentPrice(body: ComponentModel | undefined): Promise<boolean> {
+        let url_ = this.baseUrl + "/Component/UpdateComponentPrice";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -123,11 +123,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processComponentPUT(_response);
+            return this.processUpdateComponentPrice(_response);
         });
     }
 
-    protected processComponentPUT(response: Response): Promise<boolean> {
+    protected processUpdateComponentPrice(response: Response): Promise<boolean> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -149,8 +149,8 @@ export class Client {
     /**
      * @return Success
      */
-    componentAll(): Promise<ComponentModel[]> {
-        let url_ = this.baseUrl + "/Component";
+    getAll(): Promise<ComponentModel[]> {
+        let url_ = this.baseUrl + "/Component/GetAll";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -161,11 +161,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processComponentAll(_response);
+            return this.processGetAll(_response);
         });
     }
 
-    protected processComponentAll(response: Response): Promise<ComponentModel[]> {
+    protected processGetAll(response: Response): Promise<ComponentModel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -191,11 +191,51 @@ export class Client {
     }
 
     /**
+     * @return Success
+     */
+    getAvailableComponent(componentName: string): Promise<AvailableComponent> {
+        let url_ = this.baseUrl + "/Component/GetAvailableComponent/{componentName}";
+        if (componentName === undefined || componentName === null)
+            throw new Error("The parameter 'componentName' must be defined.");
+        url_ = url_.replace("{componentName}", encodeURIComponent("" + componentName));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetAvailableComponent(_response);
+        });
+    }
+
+    protected processGetAvailableComponent(response: Response): Promise<AvailableComponent> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AvailableComponent.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AvailableComponent>(null as any);
+    }
+
+    /**
      * @param body (optional) 
      * @return Success
      */
     addNewProject(body: NewProject | undefined): Promise<boolean> {
-        let url_ = this.baseUrl + "/Project/addNewProject";
+        let url_ = this.baseUrl + "/Project/AddNewProject";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -408,6 +448,46 @@ export class Client {
     }
 
     /**
+     * @return Success
+     */
+    getProjectsWithStatus(location: string): Promise<ProjectStatus> {
+        let url_ = this.baseUrl + "/Project/GetProjectsWithStatus/{location}";
+        if (location === undefined || location === null)
+            throw new Error("The parameter 'location' must be defined.");
+        url_ = url_.replace("{location}", encodeURIComponent("" + location));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetProjectsWithStatus(_response);
+        });
+    }
+
+    protected processGetProjectsWithStatus(response: Response): Promise<ProjectStatus> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ProjectStatus.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ProjectStatus>(null as any);
+    }
+
+    /**
      * @param body (optional) 
      * @return Success
      */
@@ -580,6 +660,46 @@ export interface IAddComponentToProject {
     location?: string | undefined;
     name?: string | undefined;
     quantity?: number;
+}
+
+export class AvailableComponent implements IAvailableComponent {
+    price?: number;
+    availableQuantity?: number;
+
+    constructor(data?: IAvailableComponent) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.price = _data["price"];
+            this.availableQuantity = _data["availableQuantity"];
+        }
+    }
+
+    static fromJS(data: any): AvailableComponent {
+        data = typeof data === 'object' ? data : {};
+        let result = new AvailableComponent();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["price"] = this.price;
+        data["availableQuantity"] = this.availableQuantity;
+        return data;
+    }
+}
+
+export interface IAvailableComponent {
+    price?: number;
+    availableQuantity?: number;
 }
 
 export class Component implements IComponent {
@@ -940,6 +1060,42 @@ export interface IProjectComponent {
     componentId?: number;
     component?: Component;
     quantity?: number;
+}
+
+export class ProjectStatus implements IProjectStatus {
+    statusName?: string | undefined;
+
+    constructor(data?: IProjectStatus) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.statusName = _data["statusName"];
+        }
+    }
+
+    static fromJS(data: any): ProjectStatus {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProjectStatus();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["statusName"] = this.statusName;
+        return data;
+    }
+}
+
+export interface IProjectStatus {
+    statusName?: string | undefined;
 }
 
 export class StoreComponent implements IStoreComponent {
