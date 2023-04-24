@@ -44,7 +44,7 @@ namespace rendszerfejlesztes_beadando.Controllers
         }
 
         [HttpGet("{location}")]
-        public async Task<ActionResult<IEnumerable<ProjectComponent>>> GetProjectComponents(string location)
+        public async Task<ActionResult<IEnumerable<StoreComponent>>> GetProjectComponents(string location)
         {
             var result = await repo.GetProjectComponents(location);
             return Ok(result);

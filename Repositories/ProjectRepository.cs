@@ -115,10 +115,22 @@ namespace rendszerfejlesztes_beadando.Repositories
             return await _context.Projects.ToListAsync();
         }
 
-        public async Task<ActionResult<IEnumerable<ProjectComponent>>> GetProjectComponents(string location)
+        public async Task<ActionResult<IEnumerable<StoreComponent>>> GetProjectComponents(string location)
         {
             var project = await _context.Projects.FirstAsync(p => p.Location == location);
-            return await _context.ProjectsComponents.Where(pc => pc.ProjectId == project.Id).ToListAsync();
+            var projectComponents = await _context.ProjectsComponents.Where(pc => pc.ProjectId == project.Id).ToListAsync();
+            List<StoreComponent> storeComponents = new List<StoreComponent>();
+            foreach (var projectComponent in projectComponents) 
+            {
+                var component = await _context.Components.FirstAsync(c => c.Id == projectComponent.ComponentId);
+                var components = new StoreComponent
+                {
+                    Name = component.Name,
+                    Quantity = projectComponent.Quantity,
+                };
+                storeComponents.Add(components);
+            }
+            return storeComponents;
         }
 
         public async Task<ProjectStatus> GetProjectsWithStatus(string location)
