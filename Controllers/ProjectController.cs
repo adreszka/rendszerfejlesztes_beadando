@@ -13,5 +13,12 @@ namespace rendszerfejlesztes_beadando.Controllers
         {
             this.repo = repo;
         }
+
+        [HttpGet("{location}")]
+        public async Task<ActionResult<ProjectStatus>> GetProjectsWithStatus(string location)
+        {
+            var result = await repo.GetProjectsWithStatus(location);
+            return Ok(result);
+        }
     }
 }
