@@ -115,9 +115,10 @@ namespace rendszerfejlesztes_beadando.Repositories
             return await _context.Projects.ToListAsync();
         }
 
-        public async Task<ActionResult<IEnumerable<ProjectComponent>>> GetProjectComponents()
+        public async Task<ActionResult<IEnumerable<ProjectComponent>>> GetProjectComponents(string location)
         {
-            return await _context.ProjectsComponents.ToListAsync();
+            var project = await _context.Projects.FirstAsync(p => p.Location == location);
+            return await _context.ProjectsComponents.Where(pc => pc.ProjectId == project.Id).ToListAsync();
         }
 
         public async Task<ProjectStatus> GetProjectsWithStatus(string location)

@@ -43,10 +43,10 @@ namespace rendszerfejlesztes_beadando.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProjectComponent>>> GetProjectComponents()
+        [HttpGet("{location}")]
+        public async Task<ActionResult<IEnumerable<ProjectComponent>>> GetProjectComponents(string location)
         {
-            var result = await repo.GetProjectComponents();
+            var result = await repo.GetProjectComponents(location);
             return Ok(result);
         }
 
