@@ -20,13 +20,13 @@ namespace rendszerfejlesztes_beadando.Repositories
         // ha pedig false akkor nem
         public async Task<bool> Add(Component parameters)
         {
-            var component = _context.Components.FirstOrDefault(p => p.Name == parameters.Name);
+            var component = await _context.Components.FirstOrDefaultAsync(p => p.Name == parameters.Name);
             if (component != null)
             {
                 return false;
             }
 
-            _context.Add(parameters);
+            await _context.AddAsync(parameters);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -36,7 +36,7 @@ namespace rendszerfejlesztes_beadando.Repositories
         // dob egy exceptiont
         public async Task<bool> Update(ComponentModel comp)
         {
-            var component = _context.Components.FirstOrDefault(p => p.Name == comp.Name);
+            var component = await _context.Components.FirstOrDefaultAsync(p => p.Name == comp.Name);
             if (component == null)
             {
                 return false;

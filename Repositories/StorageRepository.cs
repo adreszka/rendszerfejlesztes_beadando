@@ -1,4 +1,5 @@
-﻿using rendszerfejlesztes_beadando.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using rendszerfejlesztes_beadando.Data;
 using rendszerfejlesztes_beadando.Models;
 
 namespace rendszerfejlesztes_beadando.Repositories
@@ -14,69 +15,60 @@ namespace rendszerfejlesztes_beadando.Repositories
         // Eltárolja az adatbázisban az alkatrészt
         public async Task<int> StoreComponent(StoreComponent parameters)
         {
-            var comp = _context.Components.FirstOrDefault(c =>
+            var comp = await _context.Components.FirstAsync(c =>
                             c.Name == parameters.Name);
             int storedQuantity;
             int quantity = parameters.Quantity;
-            for (int i = 1; i <= 10; i++)
-            { 
-                for (int j = 1; j <= 4; j++)
+            var storage = await _context.Storage.ToListAsync();
+            foreach (var row in storage)
+            {
+                storedQuantity = 0;
+                if (row.ComponentId != comp.Id && row.ComponentId != null)
                 {
-                    for (int k = 1; k <= 6; k++)
+                    continue;
+                }
+                if (row.Quantity != null)
+                {
+                    storedQuantity = (int)row.Quantity;
+                }
+                if (row.ComponentId == null)
+                {
+                    if (storedQuantity + quantity > comp.MaxCapacity && storedQuantity == 0)
                     {
-                        storedQuantity = 0;
-                        var storage = _context.Storage.FirstOrDefault(s =>
-                        s.Row == i && s.Columnn == j && s.Level == k);
-                        if (storage.ComponentId != comp.Id && storage.ComponentId != null) 
-                        {
-                            continue;
-                        }
-                        if (storage.Quantity != null)
-                        {
-                            storedQuantity = (int)storage.Quantity;
-                        }
-                        if (storage.ComponentId == null)
-                        {
-                            if (storedQuantity + quantity > comp.MaxCapacity && storedQuantity == 0)
-                            {
-                                storage.ComponentId = comp.Id;
-                                storage.Quantity = comp.MaxCapacity;
-                                quantity -= comp.MaxCapacity;
-                            }
-                            else if (storedQuantity + quantity > comp.MaxCapacity && storedQuantity != 0) 
-                            {
-                                storage.ComponentId = comp.Id;
-                                storage.Quantity = comp.MaxCapacity;
-                                quantity -= comp.MaxCapacity - storedQuantity;
-                            }
-                            else
-                            {
-                                storage.ComponentId = comp.Id;
-                                storage.Quantity = storedQuantity + quantity;
-                                quantity = 0;
-                            }
-                        }
-                        else 
-                        {
-                            if (storedQuantity + quantity > comp.MaxCapacity && storedQuantity == 0)
-                            {
-                                storage.Quantity = comp.MaxCapacity;
-                                quantity -= comp.MaxCapacity;
-                            }
-                            else if (storedQuantity + quantity > comp.MaxCapacity && storedQuantity != 0)
-                            {
-                                storage.Quantity = comp.MaxCapacity;
-                                quantity -= comp.MaxCapacity - storedQuantity;
-                            }
-                            else
-                            {
-                                storage.Quantity = quantity + storedQuantity;
-                                quantity = 0;
-                            }
-                        }
-                        if (quantity == 0) break;
+                        row.ComponentId = comp.Id;
+                        row.Quantity = comp.MaxCapacity;
+                        quantity -= comp.MaxCapacity;
                     }
-                    if (quantity == 0) break;
+                    else if (storedQuantity + quantity > comp.MaxCapacity && storedQuantity != 0)
+                    {
+                        row.ComponentId = comp.Id;
+                        row.Quantity = comp.MaxCapacity;
+                        quantity -= comp.MaxCapacity - storedQuantity;
+                    }
+                    else
+                    {
+                        row.ComponentId = comp.Id;
+                        row.Quantity = storedQuantity + quantity;
+                        quantity = 0;
+                    }
+                }
+                else
+                {
+                    if (storedQuantity + quantity > comp.MaxCapacity && storedQuantity == 0)
+                    {
+                        row.Quantity = comp.MaxCapacity;
+                        quantity -= comp.MaxCapacity;
+                    }
+                    else if (storedQuantity + quantity > comp.MaxCapacity && storedQuantity != 0)
+                    {
+                        row.Quantity = comp.MaxCapacity;
+                        quantity -= comp.MaxCapacity - storedQuantity;
+                    }
+                    else
+                    {
+                        row.Quantity = quantity + storedQuantity;
+                        quantity = 0;
+                    }
                 }
                 if (quantity == 0) break;
             }

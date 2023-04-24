@@ -6,7 +6,7 @@ using rendszerfejlesztes_beadando.Repositories;
 
 namespace rendszerfejlesztes_beadando.Controllers
 {
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     [ApiController]
     public class ComponentController : ControllerBase
     {
@@ -21,7 +21,7 @@ namespace rendszerfejlesztes_beadando.Controllers
 
         // Ezt az endpointot hívja meg a raktárvezető ha új alkatrészt akar hozzáadni 
         [HttpPost]
-        public async Task<ActionResult<bool>> Post([FromBody] ComponentModel component)
+        public async Task<ActionResult<bool>> AddNewComponent([FromBody] ComponentModel component)
         {
             var result = await repo.Add(mapper.Map<Component>(component));
             return Ok(result);
@@ -30,7 +30,7 @@ namespace rendszerfejlesztes_beadando.Controllers
 
         // Ezt az endpointot hívja meg a raktárvezető ha módosítani akarja az árát az adott alkatrésznek
         [HttpPut]
-        public async Task<ActionResult<bool>> Put([FromBody] ComponentModel component)
+        public async Task<ActionResult<bool>> UpdateComponentPrice([FromBody] ComponentModel component)
         {
             var result = await repo.Update(component);
             return Ok(result);
@@ -38,11 +38,10 @@ namespace rendszerfejlesztes_beadando.Controllers
 
         // Ezzel az endpointal le lehet kérni az összes alkatrészt
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ComponentModel>>> Get() 
+        public async Task<ActionResult<IEnumerable<ComponentModel>>> GetAll() 
         {
             var result = await repo.GetAll();
             return Ok(result.Select(mapper.Map<ComponentModel>));
         }
     }
-
 }

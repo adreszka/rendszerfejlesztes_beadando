@@ -19,7 +19,7 @@ namespace rendszerfejlesztes_beadando.Repositories
         }
         public async Task<bool> addNewProject(NewProject parameters)
         {
-            var customer = _context.Customers.FirstOrDefault(c =>
+            var customer = await _context.Customers.FirstOrDefaultAsync(c =>
             c.Name == parameters.Name && c.PhoneNumber == parameters.PhoneNumber);
             if (customer == null)
             {
@@ -37,13 +37,13 @@ namespace rendszerfejlesztes_beadando.Repositories
                     c.Email = parameters.Email;
                     c.TaxNumber = parameters.TaxNumber;
                 }
-                _context.Add(c);
+                await _context.AddAsync(c);
             }
             await _context.SaveChangesAsync();
 
             if (customer == null)
             {
-                customer = _context.Customers.FirstOrDefault(c =>
+                customer = await _context.Customers.FirstAsync(c =>
                 c.Name == parameters.Name && c.PhoneNumber == parameters.PhoneNumber);
             }
             var project = new Project
@@ -52,17 +52,17 @@ namespace rendszerfejlesztes_beadando.Repositories
                 Description = parameters.Description,
                 CustomerId = customer.Id,
             };
-            _context.Add(project);
+            await _context.AddAsync(project);
             await _context.SaveChangesAsync();
 
-            var p = _context.Projects.FirstOrDefault(p => p.Location == parameters.Location);
-            var statuses = _context.Statuses.FirstOrDefault(s => s.Name == "New");
+            var p = await _context.Projects.FirstAsync(p => p.Location == parameters.Location);
+            var statuses = await _context.Statuses.FirstAsync(s => s.Name == "New");
             var log = new Log
             {
                 ProjectId = project.Id,
                 StatusId = statuses.Id,
             };
-            _context.Add(log);
+            await _context.AddAsync(log);
             await _context.SaveChangesAsync();
 
             return true;
@@ -70,7 +70,7 @@ namespace rendszerfejlesztes_beadando.Repositories
 
         public async Task<bool> AddWorkTimeAndFee(WorkTimeAndFee timeandfee)
         {
-            var projects = _context.Projects.FirstOrDefault(p => p.Location == timeandfee.Location);
+            var projects = await _context.Projects.FirstAsync(p => p.Location == timeandfee.Location);
             projects.WorkTime = timeandfee.Worktime;
             projects.Fee = timeandfee.Fee;
             await _context.SaveChangesAsync();
@@ -78,9 +78,9 @@ namespace rendszerfejlesztes_beadando.Repositories
         }
         public async Task<bool> AddComponentToProject(AddComponentToProject component)
         {
-            var projects = _context.Projects.FirstOrDefault(p => p.Location == component.Location);
-            var components = _context.Components.FirstOrDefault(c => c.Name == component.Name);
-            var check = _context.ProjectsComponents.FirstOrDefault(h => h.ProjectId == projects.Id && h.ComponentId == components.Id);
+            var projects = await _context.Projects.FirstAsync(p => p.Location == component.Location);
+            var components = await _context.Components.FirstAsync(c => c.Name == component.Name);
+            var check = await _context.ProjectsComponents.FirstOrDefaultAsync(h => h.ProjectId == projects.Id && h.ComponentId == components.Id);
             if (check != null)
             {
                 check.Quantity += component.Quantity;
@@ -93,9 +93,9 @@ namespace rendszerfejlesztes_beadando.Repositories
                     ComponentId = components.Id,
                     Quantity = component.Quantity,
                 };
-                _context.Add(mapper.Map<ProjectComponent>(projectComponents));
-                var statuses = _context.Statuses.FirstOrDefault(s => s.Name == "Draft");
-                var log = _context.Logs.FirstOrDefault(g => g.ProjectId == projects.Id && g.StatusId == statuses.Id);
+                await _context.AddAsync(mapper.Map<ProjectComponent>(projectComponents));
+                var statuses = await _context.Statuses.FirstAsync(s => s.Name == "Draft");
+                var log = await _context.Logs.FirstOrDefaultAsync(g => g.ProjectId == projects.Id && g.StatusId == statuses.Id);
                 if (log == null)
                 {
                     var logs = new Log
@@ -103,7 +103,7 @@ namespace rendszerfejlesztes_beadando.Repositories
                         ProjectId = projects.Id,
                         StatusId = statuses.Id,
                     };
-                    _context.Add(logs);
+                    await _context.AddAsync(logs);
                 }
             }
             await _context.SaveChangesAsync();

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using rendszerfejlesztes_beadando.Data;
 using rendszerfejlesztes_beadando.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace rendszerfejlesztes_beadando.Repositories
 {
@@ -22,7 +23,7 @@ namespace rendszerfejlesztes_beadando.Repositories
         // akkor pedig, hogy nem sikerült
         public async Task<bool> Add(User parameters)
         {
-            var userFound = authContext.Users.FirstOrDefault(p => p.UserName == parameters.UserName);
+            var userFound = await authContext.Users.FirstOrDefaultAsync(p => p.UserName == parameters.UserName);
             if (userFound != null)
             {
                 return false;
