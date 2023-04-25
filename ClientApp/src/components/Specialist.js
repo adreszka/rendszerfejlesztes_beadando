@@ -1,13 +1,39 @@
-﻿import React from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import "./Specialist.css";
 import { Client } from "../ApiServices.ts";
 
 export function Specialist() {
     var client = new Client();
+    const [projects, setProjects] = new useState([]);
+    const [components, setComponents] = new useState([]);
 
-    var flag = false;
+    const getProjects = async () => {
+        await client.getProjects().then((val) => {
+            setProjects(val);
+            listProjects();
+            listProjectsAdd();
+            listProjectsProperties();
+        }).catch((error) => console.log(error));
+    };
 
-    //craete project
+    const getComponents = async () => {
+        await client.getAll().then((val) => {
+            setComponents(val);
+            listComponents();
+            listComponentsAdd();
+        }).catch((error) => console.log(error));
+    };
+
+    const flag = null;
+
+    useEffect(() => {
+        getProjects();
+        getComponents();
+    }, [flag])
+
+    //create project
+    var companyFlag = false;
+
     const createProject = async (event) => {
         event.preventDefault();
         const data = new FormData(event.target);
@@ -23,58 +49,180 @@ export function Specialist() {
             if (val) {
                 window.alert("The project was successfully created!");
             } else {
-                window.alert("An error occured during the creation of the new project!");
+                window.alert("An error occurred during the creation of the new project!");
             }
         }).catch((error) => { console.log(error) });
     };
 
     const setFlag = (check) => {
-        flag = check.target.checked;
+        companyFlag = check.target.checked;
 
-        document.getElementById("tax").readOnly = !flag;
+        document.getElementById("tax").readOnly = !companyFlag;
 
-        if (!flag)
+        if (!companyFlag)
             document.getElementById("tax").value = "";
     };
 
     //projects
-    const setCurrentProject = () => {
-
+    const setCurrentProject = (option) => {
+        if (option.target.value !== "choose") {
+            client.getProjectsWithStatus(option.target.value).then((val) => {
+                document.getElementById("projectState").value = val['statusName'];
+            }).catch((error) => { console.log(error) });
+        } else {
+            document.getElementById("projectState").value = "";
+        }   
     };
 
     const listProjects = () => {
+        var result = new Array();
 
+        result = result.concat(projects.map((temp) => {
+            var name = temp['location'];
+
+            return <option key={name} value={name} >{name}</option>;
+        }));
+
+        return result;
     };
 
     //compoents
-    const setCurrentComponent = () => {
+    const setCurrentComponent = (option) => {
+        if (option.target.value !== "choose") {
+            client.getAvailableComponent(option.target.value).then((val) => {
+                document.getElementById("componentPrice").value = val['price'];
 
+                if (val['availableQuantity'] > 0) {
+                    document.getElementById("componentState").value = "available - " + val['availableQuantity'];
+                } else {
+                    document.getElementById("componentState").value = "unavailable";
+                }
+                
+            }).catch((error) => { console.log(error) });
+        } else {
+            document.getElementById("componentPrice").value = "";
+            document.getElementById("componentState").value = "";
+        }
     };
 
     const listComponents = () => {
+        var result = new Array();
 
+        result = result.concat(components.map((temp) => {
+            var name = temp['name'];
+
+            return <option key={name} value={name} >{name}</option>;
+        }));
+
+        return result;
     };
 
     //add component to project
-    const setCurrentProjectAdd = () => {
+    const setCurrentProjectAdd = (option) => {
+        if (option.target.value !== "choose") {
+            client.getProjectComponents(option.target.value).then((val) => {
+                var text = "";
+                val.forEach((temp) => {
+                    text += temp['name'] + " - " + temp['quantity'] + "\n";
+                });
 
+                document.getElementById("components").value = text;
+            }).catch((error) => { console.log(error); });
+        } else { 
+            document.getElementById("components").value = "";
+        }
     };
 
     const listProjectsAdd = () => {
+        var result = new Array();
 
+        result = result.concat(projects.map((temp) => {
+            var name = temp['location'];
+
+            return <option key={name} value={name} >{name}</option>;
+        }));
+
+        return result;
     };
 
-    const setCurrentComponentAdd = () => {
+    const setCurrentComponentAdd = (option) => {
 
     };
 
     const listComponentsAdd = () => {
+        var result = new Array();
 
+        result = result.concat(components.map((temp) => {
+            var name = temp['name'];
+
+            return <option key={name} value={name} >{name}</option>;
+        }));
+
+        return result;
     };
 
     const addComponentToProject = async (event) => {
         event.preventDefault();
-        const data = new FormData(event.data);
+        const data = new FormData(event.target);
+
+        await client.addComponentToProject({
+            "location": data.get("selectProjectsAdd"),
+            "name": data.get("selectComponentsAdd"),
+            "quantity": data.get("componentAmount")
+        }).then((val) => {
+            if (val) {
+                window.alert("The component addition to the project was successful!");
+            } else {
+                window.alert("There was an issue during the addition of the component to the project!");
+            }
+        }).catch((error) => { console.log(error) });
+
+        if (data.get("selectProjectsAdd") !== "choose") {
+            client.getProjectComponents(data.get("selectProjectsAdd")).then((val) => {
+                var text = "";
+                val.forEach((temp) => {
+                    text += temp['name'] + " - " + temp['quantity'] + "\n";
+                });
+
+                document.getElementById("components").value = text;
+            }).catch((error) => { console.log(error); });
+        } else {
+            document.getElementById("components").value = "";
+        }
+    };
+
+    //set project properties
+    const setCurrentProjectProperties = (option) => {
+
+    };
+
+    const listProjectsProperties = () => {
+        var result = new Array();
+
+        result = result.concat(projects.map((temp) => {
+            var name = temp['location'];
+
+            return <option key={name} value={name} >{name}</option>;
+        }));
+
+        return result;
+    };
+
+    const setProjectProperties = async (event) => {
+        event.preventDefault();
+        const data = new FormData(event.target);
+
+        await client.addWorkTimeAndFee({
+            "worktime": data.get('projectDays'),
+            "fee": data.get('projectFee'),
+            "location": data.get('selectProjectsProperties')
+        }).then((val) => {
+            if (val) {
+                window.alert("Project properties were successfully set!");
+            } else {
+                window.alert("There was an issue during the set of the properties!");
+            }
+        }).catch((error) => { console.log(error) });
     };
 
     return (
@@ -137,7 +285,7 @@ export function Specialist() {
                         <td>
                             <div className="bg">
                                 <h1>Projects</h1>
-                                <select className="list" id="listProjects" name="listProjects" onChange={setCurrentProject}>
+                                <select className="list" id="selectProjects" name="selectProjects" onChange={setCurrentProject}>
                                     <option key="choose" value="choose" >Choose a project</option>
                                     {listProjects()}
                                 </select>
@@ -150,7 +298,7 @@ export function Specialist() {
                         <td>
                             <div className="bg">
                                 <h1>Components</h1>
-                                <select className="list" id="listComponents" name="listComponents" onChange={setCurrentComponent}>
+                                <select className="list" id="selectComponents" name="selectComponents" onChange={setCurrentComponent}>
                                     <option key="choose" value="choose" >Choose a component</option>
                                     {listComponents()}
                                 </select>
@@ -166,18 +314,18 @@ export function Specialist() {
                         </td>
                     </tr>
                     <tr>
-                        <td colSpan="2">
+                        <td>
                             <div className="bg">
                                 <form onSubmit={addComponentToProject}>
                                     <h1>Add components to project</h1>
-                                    <select className="list" id="listProjectsAdd" name="listProjectsAdd" onChange={setCurrentProjectAdd}>
+                                    <select className="list" id="selectProjectsAdd" name="selectProjectsAdd" onChange={setCurrentProjectAdd}>
                                         <option key="choose" value="choose" >Choose a project</option>
                                         {listProjectsAdd()}
                                     </select>
                                     <br />
-                                    <textarea id="components" name="components"></textarea>
+                                    <textarea id="components" name="components" readOnly></textarea>
                                     <br />
-                                    <select className="list" id="listComponentsAdd" name="listComponentsAdd" onChange={setCurrentComponentAdd}>
+                                    <select className="list" id="selectComponentsAdd" name="selectComponentsAdd" onChange={setCurrentComponentAdd}>
                                         <option key="choose" value="choose" >Choose a component</option>
                                         {listComponentsAdd()}
                                     </select>
@@ -186,6 +334,26 @@ export function Specialist() {
                                         <input type="number" id="componentAmount" name="componentAmount" min="0"></input>
                                     </fieldset>
                                     <button>Add component</button>
+                                </form>
+                            </div>
+                        </td>
+                        <td>
+                            <div className="bg">
+                                <form onSubmit={setProjectProperties}>
+                                    <h1>Set project properties:</h1>
+                                    <select className="list" id="selectProjectsProperties" name="selectProjectsProperties" onChange={setCurrentProjectProperties}>
+                                        <option key="choose" value="choose" >Choose a project</option>
+                                        {listProjectsProperties()}
+                                    </select>
+                                    <fieldset className="input-field">
+                                        <legend>Work days:</legend>
+                                        <input type="number" id="projectDays" name="projectDays" min="0"></input>
+                                    </fieldset>
+                                    <fieldset className="input-field">
+                                        <legend>Work fee:</legend>
+                                        <input type="number" id="projectFee" name="projectFee" min="0"></input>
+                                    </fieldset>
+                                    <button>Set properties</button>
                                 </form>
                             </div>
                         </td>

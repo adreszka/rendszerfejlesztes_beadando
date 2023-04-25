@@ -406,8 +406,11 @@ export class Client {
     /**
      * @return Success
      */
-    getProjectComponents(): Promise<ProjectComponent[]> {
-        let url_ = this.baseUrl + "/Project/GetProjectComponents";
+    getProjectComponents(location: string): Promise<StoreComponent[]> {
+        let url_ = this.baseUrl + "/Project/GetProjectComponents/{location}";
+        if (location === undefined || location === null)
+            throw new Error("The parameter 'location' must be defined.");
+        url_ = url_.replace("{location}", encodeURIComponent("" + location));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -422,7 +425,7 @@ export class Client {
         });
     }
 
-    protected processGetProjectComponents(response: Response): Promise<ProjectComponent[]> {
+    protected processGetProjectComponents(response: Response): Promise<StoreComponent[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -432,7 +435,7 @@ export class Client {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(ProjectComponent.fromJS(item));
+                    result200!.push(StoreComponent.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -444,7 +447,7 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<ProjectComponent[]>(null as any);
+        return Promise.resolve<StoreComponent[]>(null as any);
     }
 
     /**
@@ -702,54 +705,6 @@ export interface IAvailableComponent {
     availableQuantity?: number;
 }
 
-export class Component implements IComponent {
-    id?: number;
-    name?: string | undefined;
-    price?: number;
-    maxCapacity?: number;
-
-    constructor(data?: IComponent) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.price = _data["price"];
-            this.maxCapacity = _data["maxCapacity"];
-        }
-    }
-
-    static fromJS(data: any): Component {
-        data = typeof data === 'object' ? data : {};
-        let result = new Component();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["price"] = this.price;
-        data["maxCapacity"] = this.maxCapacity;
-        return data;
-    }
-}
-
-export interface IComponent {
-    id?: number;
-    name?: string | undefined;
-    price?: number;
-    maxCapacity?: number;
-}
-
 export class ComponentModel implements IComponentModel {
     name?: string | undefined;
     price?: number;
@@ -1004,62 +959,6 @@ export interface IProject {
     workTime?: number | undefined;
     fee?: number | undefined;
     componentsPrices?: number | undefined;
-}
-
-export class ProjectComponent implements IProjectComponent {
-    id?: number;
-    projectId?: number;
-    project?: Project;
-    componentId?: number;
-    component?: Component;
-    quantity?: number;
-
-    constructor(data?: IProjectComponent) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.projectId = _data["projectId"];
-            this.project = _data["project"] ? Project.fromJS(_data["project"]) : <any>undefined;
-            this.componentId = _data["componentId"];
-            this.component = _data["component"] ? Component.fromJS(_data["component"]) : <any>undefined;
-            this.quantity = _data["quantity"];
-        }
-    }
-
-    static fromJS(data: any): ProjectComponent {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProjectComponent();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["projectId"] = this.projectId;
-        data["project"] = this.project ? this.project.toJSON() : <any>undefined;
-        data["componentId"] = this.componentId;
-        data["component"] = this.component ? this.component.toJSON() : <any>undefined;
-        data["quantity"] = this.quantity;
-        return data;
-    }
-}
-
-export interface IProjectComponent {
-    id?: number;
-    projectId?: number;
-    project?: Project;
-    componentId?: number;
-    component?: Component;
-    quantity?: number;
 }
 
 export class ProjectStatus implements IProjectStatus {

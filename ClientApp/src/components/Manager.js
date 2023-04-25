@@ -15,7 +15,7 @@ export function Manager() {
         event.preventDefault();
         const data = new FormData(event.target);
 
-        await client.componentPOST({
+        await client.addNewComponent({
             "name": data.get('name'),
             "price": data.get('price'),
             "maxCapacity": data.get('maxAmount')
@@ -31,7 +31,7 @@ export function Manager() {
     }
 
     const getElements = async () => {
-        await client.componentAll().then((val) => {
+        await client.getAll().then((val) => {
             setElements(val);
             listElements();
         }).catch((error) => console.log(error));
@@ -54,7 +54,7 @@ export function Manager() {
         const data = new FormData(event.target);
 
         if (document.getElementById('listUpdate').value !== "choose") {
-            client.componentPUT({
+            client.updateComponentPrice({
                 "name": data.get('listUpdate'),
                 "price": data.get('newPrice'),
                 "maxCapacity": 0

@@ -10,6 +10,10 @@ const context = [
     "/Auth",
     "/Auth/Login",
     "/Component",
+    "/Component/AddNewComponent",
+    "/Component/UpdateComponentPrice",
+    "/Component/GetAll",
+    "/Component/GetAvailableComponent",
     "/User",
     "/Storage",
     "/Project",
@@ -17,7 +21,8 @@ const context = [
     "/Project/AddComponentToProject",
     "/Project/GetProjects",
     "/Project/GetProjectComponents",
-    "/Project/addNewProject",
+    "/Project/AddNewProject",
+    "/Project/GetProjectsWithStatus",
 ];
 
 module.exports = function(app) {
