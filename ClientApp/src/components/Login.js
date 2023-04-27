@@ -23,6 +23,9 @@ export function Login() {
             if (val['role'] === "Administrator") {
                 navigate('/admin');
             }
+            if (val['role'] === "Specialist") {
+                navigate('/specialist');
+            }
             if(val['role'] === null)
                 window.alert("Invalid username or password!");
         })
