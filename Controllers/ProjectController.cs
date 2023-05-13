@@ -56,5 +56,12 @@ namespace rendszerfejlesztes_beadando.Controllers
             var result = await repo.GetProjectsWithStatus(location);
             return Ok(result);
         }
+
+        [HttpPut("{location}")]
+        public async Task<ActionResult<bool>> PriceCalculation(string location) 
+        { 
+            var result = await repo.PriceCalculation(location);
+            return Ok(result);
+        }
     }
 }
