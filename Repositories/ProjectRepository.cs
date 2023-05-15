@@ -254,72 +254,81 @@ namespace rendszerfejlesztes_beadando.Repositories
 
         public async Task<bool> PriceCalculation(string location) 
         {
-
             bool componentsAvailable = true;
             var project = await _context.Projects.FirstAsync(p => p.Location == location);
-            var projectComponents = await _context.ProjectsComponents.Where(pc =>
-            pc.ProjectId == project.Id).ToListAsync();
-            Dictionary<string, int> componentsQuantity = new Dictionary<string, int>();
-            foreach (var pc in projectComponents) 
+            var projectComponents = await _context.ProjectsComponents.Where(pc => 
+                pc.ProjectId == project.Id).ToListAsync();
+            foreach (var projectComponent in projectComponents) 
             {
-                var component = await _context.Components.FirstAsync(c => c.Id == pc.Id);
-                componentsQuantity.Add(component.Name, 0);
-            }
-            var storage = await _context.Storage.ToListAsync();
-            foreach (var s in storage)
-            {
-                foreach (var cq in componentsQuantity)
-                {
-                    var component = await _context.Components.FirstAsync(c => c.Name == cq.Key);
-                    if (s.ComponentId == component.Id) 
-                    {
-                        componentsQuantity[component.Name] += (int)s.Quantity;
-                        break;
-                    }
-                }
-            }
-            foreach (var pc in projectComponents) 
-            {
-                var component = await _context.Components.FirstAsync(c => c.Id == pc.Id);
-                if (componentsQuantity[component.Name] < pc.Quantity)
+                if (projectComponent.StorageId == null) 
                 {
                     var status = await _context.Statuses.FirstAsync(s => s.Name == "Wait");
-                    var l = await _context.Logs.FirstOrDefaultAsync(a => 
-                    a.ProjectId == project.Id && a.StatusId == status.Id);
-                    if (l == null)
+                    var projectStatus = await _context.Logs.OrderByDescending(ps => ps.Date).ToListAsync();
+                    foreach (var ps in projectStatus) 
                     {
-                        var log = new Log
+                        if (ps.StatusId == status.Id) 
+                        {
+                            componentsAvailable = false;
+                            break;
+                        }
+                    }
+                    if (componentsAvailable) 
+                    {
+                        var newLog = new Log
                         {
                             ProjectId = project.Id,
                             StatusId = status.Id,
                         };
-                        await _context.AddAsync(log);
+                        await _context.AddAsync(newLog);
+                        await _context.SaveChangesAsync();
+                        componentsAvailable = false;
                     }
-                    componentsAvailable = false;
-                    break;
                 }
             }
-            if (componentsAvailable) 
+            if (!componentsAvailable) 
             {
-                var status = await _context.Statuses.FirstAsync(s => s.Name == "Scheduled");
-                var l = await _context.Logs.FirstOrDefaultAsync(a =>
-                a.ProjectId == project.Id && a.StatusId == status.Id);
-                if (l == null)
+                return false;
+            }
+            var stat = await _context.Statuses.FirstAsync(s => s.Name == "Scheduled");
+            var logs = await _context.Logs.OrderByDescending(l => l.Date).ToListAsync();
+            foreach (var l in logs) 
+            {
+                if (l.ProjectId == project.Id && l.StatusId == stat.Id) 
                 {
-                    var log = new Log
-                    {
-                        ProjectId = project.Id,
-                        StatusId = status.Id,
-                    };
-                    await _context.AddAsync(log);
-                    project.ComponentsPrices = 0;
-                    foreach (var pc in projectComponents)
-                    {
-                        var component = await _context.Components.FirstAsync(c => c.Id == pc.ComponentId);
-                        project.ComponentsPrices += pc.Quantity * component.Price;
-                    }
+                    return false;
                 }
             }
+            var components = await _context.Components.ToListAsync();
+            int sum = 0;
+            Dictionary<string, int> componentsQuantity = new Dictionary<string, int>();
+            foreach (var component in components) 
+            {
+                componentsQuantity[component.Name] = 0;
+            }
+            foreach (var pc in projectComponents) 
+            {
+                if (pc.StorageId != null)
+                {
+                    var component = await _context.Components.FirstAsync(c => c.Id == pc.ComponentId);
+                    componentsQuantity[component.Name] += pc.Quantity;
+                }
+            }
+            foreach (var cq in componentsQuantity) 
+            {
+                if (cq.Value > 0) 
+                {
+                    var component = components.First(c => c.Name == cq.Key);
+                    sum += cq.Value * component.Price;
+                }
+            }
+            var projectPrice = await _context.Projects.FirstAsync(pp => pp.Id == project.Id);
+            projectPrice.ComponentsPrices = sum;
+            var log = new Log
+            {
+                ProjectId = project.Id,
+                StatusId = stat.Id,
+            };
+            await _context.AddAsync(log);
             await _context.SaveChangesAsync();
             return componentsAvailable;
         }
@@ -398,6 +407,41 @@ namespace rendszerfejlesztes_beadando.Repositories
             }
 
             return missingComponents;
+        }
+
+        public async Task<bool> CloseProject(ProjectClose projectClose) 
+        {
+            var statusC = await _context.Statuses.FirstAsync(s => s.Name == "Completed");
+            var statusF = await _context.Statuses.FirstAsync(s => s.Name == "Failed");
+            var project = await _context.Projects.FirstAsync(p => p.Location == projectClose.Location);
+            var logs = await _context.Logs.OrderByDescending(l => l.Date).ToListAsync();
+            foreach (var l in logs)
+            {
+                if ((l.ProjectId == project.Id && l.StatusId == statusC.Id) || (l.ProjectId == project.Id && l.StatusId == statusF.Id)) 
+                {
+                    return false;
+                }
+            }
+            if (projectClose.ProjectFinished == true)
+            {
+                var log = new Log
+                {
+                    ProjectId = project.Id,
+                    StatusId = statusC.Id,
+                };
+                await _context.AddAsync(log);
+            }
+            else 
+            {
+                var log = new Log
+                {
+                    ProjectId = project.Id,
+                    StatusId = statusF.Id,
+                };
+                await _context.AddAsync(log);
+            }
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

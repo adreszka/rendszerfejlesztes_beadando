@@ -70,5 +70,12 @@ namespace rendszerfejlesztes_beadando.Controllers
             var result = await repo.GetProjectsComponentsInformation();
             return Ok(result);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<bool>> CloseProject([FromBody] ProjectClose projectClose) 
+        {
+            var result = await repo.CloseProject(projectClose);
+            return Ok(result);
+        }
     }
 }
