@@ -12,7 +12,7 @@ using rendszerfejlesztes_beadando.Data;
 namespace rendszerfejlesztes_beadando.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230515112429_InitialCreate")]
+    [Migration("20230515134851_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

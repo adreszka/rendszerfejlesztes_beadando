@@ -83,36 +83,40 @@ namespace rendszerfejlesztes_beadando.Repositories
             return availableComponent;
         }
 
-        public async Task<Dictionary<string, int>> GetMissingComponents() 
+        public async Task<IEnumerable<StoreComponent>> GetMissingComponents()
         {
-            Dictionary<string, int> missingComponents = new Dictionary<string, int>();
-            var components = await GetAll();
+            List<StoreComponent> missingComponents = new List<StoreComponent>();
+            var components = await _context.Components.ToListAsync();
+            Dictionary<string, int> componentsQuantity = new Dictionary<string, int>();
             foreach (var component in components) 
             {
-                missingComponents.Add(component.Name, 0);
+                componentsQuantity.Add(component.Name, 0);
             }
             var storage = await _context.Storage.ToListAsync();
-            foreach (var row in storage)
+            foreach (var s in storage) 
             {
-                foreach (var component in components)
+                if (s.ComponentId != null) 
                 {
-                    if (row.ComponentId == component.Id)
-                    {
-                        missingComponents[component.Name] += (int)row.Quantity;
-                        break;
-                    }
+                    var component = components.First(c => c.Id == s.ComponentId);
+                    componentsQuantity[component.Name] += (int)s.Quantity;
                 }
             }
-            var reserved = await _context.ProjectsComponents.ToListAsync();
-            foreach (var r in reserved)
+            var projectComponents = await _context.ProjectsComponents.ToListAsync();
+            foreach (var projectComponent in projectComponents) 
             {
-                foreach (var component in components)
+                var component = components.First(c => c.Id == projectComponent.ComponentId);
+                componentsQuantity[component.Name] -= projectComponent.Quantity;
+            }
+            foreach (var cq in componentsQuantity) 
+            {
+                if (cq.Value < 0) 
                 {
-                    if (r.ComponentId == component.Id)
+                    var missingComp = new StoreComponent
                     {
-                        missingComponents[component.Name] -= (int)r.Quantity;
-                        break;
-                    }
+                        Name = cq.Key,
+                        Quantity = cq.Value * -1,
+                    };
+                    missingComponents.Add(missingComp);
                 }
             }
             return missingComponents;

@@ -52,7 +52,7 @@ namespace rendszerfejlesztes_beadando.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Dictionary<string, int>>> GetMissingComponents() 
+        public async Task<ActionResult<IEnumerable<StoreComponent>>> GetMissingComponents() 
         {
             var result = await repo.GetMissingComponents();
             return Ok(result);

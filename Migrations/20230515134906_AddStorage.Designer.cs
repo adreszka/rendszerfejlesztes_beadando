@@ -12,8 +12,8 @@ using rendszerfejlesztes_beadando.Data;
 namespace rendszerfejlesztes_beadando.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230515112458_AddStatuses")]
-    partial class AddStatuses
+    [Migration("20230515134906_AddStorage")]
+    partial class AddStorage
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

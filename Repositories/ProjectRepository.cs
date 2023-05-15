@@ -78,34 +78,127 @@ namespace rendszerfejlesztes_beadando.Repositories
         }
         public async Task<bool> AddComponentToProject(AddComponentToProject component)
         {
-            var projects = await _context.Projects.FirstAsync(p => p.Location == component.Location);
+            var project = await _context.Projects.FirstAsync(p => p.Location == component.Location);
             var components = await _context.Components.FirstAsync(c => c.Name == component.Name);
-            var check = await _context.ProjectsComponents.FirstOrDefaultAsync(h => h.ProjectId == projects.Id && h.ComponentId == components.Id);
-            if (check != null)
+            var projectComponents = await _context.ProjectsComponents.ToListAsync();
+            var storage = await _context.Storage.ToListAsync();
+            int componentQuantityToStore = component.Quantity;
+            foreach (var s in storage) 
             {
-                check.Quantity += component.Quantity;
-            }
-            else
-            {
-                var projectComponents = new ProjectComponentModel
+                int reservedQuantityOfThatComponentInSameStorage = 0;
+                if (s.ComponentId == components.Id) 
                 {
-                    ProjectId = projects.Id,
-                    ComponentId = components.Id,
-                    Quantity = component.Quantity,
-                };
-                await _context.AddAsync(mapper.Map<ProjectComponent>(projectComponents));
+                    foreach (var pc in projectComponents) 
+                    {
+                        if (pc.ComponentId == components.Id && pc.StorageId == s.Id)
+                        {
+                            reservedQuantityOfThatComponentInSameStorage += pc.Quantity;
+                        }
+                    }
+                    if (reservedQuantityOfThatComponentInSameStorage < s.Quantity) 
+                    {
+                        int storableQuantity = (int)s.Quantity - reservedQuantityOfThatComponentInSameStorage;
+                        ProjectComponent? foundProjectComponent = null;
+                        foreach (var pc in projectComponents)
+                        {
+                            if (pc.ProjectId == project.Id && pc.StorageId == s.Id)
+                            {
+                                foundProjectComponent = pc;
+                                break;
+                            }
+                        }
+                        if (componentQuantityToStore <= storableQuantity)
+                        {
+                            if (foundProjectComponent == null)
+                            {
+                                var projectComponent = new ProjectComponentModel
+                                {
+                                    ProjectId = project.Id,
+                                    ComponentId = components.Id,
+                                    StorageId = s.Id,
+                                    Quantity = componentQuantityToStore,
+                                };
+                                componentQuantityToStore -= componentQuantityToStore;
+                                await _context.AddAsync(mapper.Map<ProjectComponent>(projectComponent));
+                                await _context.SaveChangesAsync();
+                            }
+                            else 
+                            {
+                                foundProjectComponent.Quantity += componentQuantityToStore;
+                                componentQuantityToStore -= componentQuantityToStore;
+                            }
+                        }
+                        else 
+                        {
+                            if (foundProjectComponent == null)
+                            {
+                                var projectComponent = new ProjectComponentModel
+                                {
+                                    ProjectId = project.Id,
+                                    ComponentId = components.Id,
+                                    StorageId = s.Id,
+                                    Quantity = storableQuantity,
+                                };
+                                componentQuantityToStore -= storableQuantity;
+                                await _context.AddAsync(mapper.Map<ProjectComponent>(projectComponent));
+                                await _context.SaveChangesAsync();
+                            }
+                            else 
+                            {
+                                if (componentQuantityToStore <= storableQuantity)
+                                {
+                                    foundProjectComponent.Quantity += componentQuantityToStore - reservedQuantityOfThatComponentInSameStorage;
+                                    componentQuantityToStore -= componentQuantityToStore - reservedQuantityOfThatComponentInSameStorage;
+                                }
+                                else 
+                                {
+                                    foundProjectComponent.Quantity += storableQuantity;
+                                    componentQuantityToStore -= storableQuantity;
+                                }
+                            }
+                        }
+                        }
+                    }
+                    if (componentQuantityToStore == 0) break;
+                }
+                if (componentQuantityToStore != 0)
+                {
+                ProjectComponent? foundProjectComponent = null;
+                foreach (var pc in projectComponents)
+                {
+                    if (pc.ProjectId == project.Id && pc.ComponentId == components.Id && pc.StorageId == null)
+                    {
+                        foundProjectComponent = pc;
+                        break;
+                    }
+                }
+                if (foundProjectComponent == null)
+                {
+                    var projectComponent = new ProjectComponentModel
+                    {
+                        ProjectId = project.Id,
+                        ComponentId = components.Id,
+                        StorageId = null,
+                        Quantity = componentQuantityToStore,
+                    };
+                    await _context.AddAsync(mapper.Map<ProjectComponent>(projectComponent));
+                }
+                else
+                {
+                    foundProjectComponent.Quantity += componentQuantityToStore;
+                }
+                }
                 var statuses = await _context.Statuses.FirstAsync(s => s.Name == "Draft");
-                var log = await _context.Logs.FirstOrDefaultAsync(g => g.ProjectId == projects.Id && g.StatusId == statuses.Id);
+                var log = await _context.Logs.FirstOrDefaultAsync(g => g.ProjectId == project.Id && g.StatusId == statuses.Id);
                 if (log == null)
                 {
                     var logs = new Log
                     {
-                        ProjectId = projects.Id,
+                        ProjectId = project.Id,
                         StatusId = statuses.Id,
                     };
                     await _context.AddAsync(logs);
                 }
-            }
             await _context.SaveChangesAsync();
             return true;
         }
@@ -118,15 +211,29 @@ namespace rendszerfejlesztes_beadando.Repositories
         public async Task<IEnumerable<StoreComponent>> GetProjectComponents(string location)
         {
             var project = await _context.Projects.FirstAsync(p => p.Location == location);
-            var projectComponents = await _context.ProjectsComponents.Where(pc => pc.ProjectId == project.Id).ToListAsync();
+            var projectComponents = await _context.ProjectsComponents.Where(pc => pc.ProjectId == project.Id).
+                OrderBy(pc => pc.ComponentId).ToListAsync();
             List<StoreComponent> storeComponents = new List<StoreComponent>();
+            var comp = await _context.Components.ToListAsync();
+            Dictionary<string, int> componentsQuantity = new Dictionary<string, int>();
+            foreach (var c in comp)
+            {
+                componentsQuantity.Add(c.Name, 0);
+            }
             foreach (var projectComponent in projectComponents) 
             {
                 var component = await _context.Components.FirstAsync(c => c.Id == projectComponent.ComponentId);
+                if (projectComponent.ComponentId == component.Id) 
+                {
+                    componentsQuantity[component.Name] += projectComponent.Quantity;
+                }
+            }
+            foreach (var cq in componentsQuantity) 
+            {
                 var components = new StoreComponent
                 {
-                    Name = component.Name,
-                    Quantity = projectComponent.Quantity,
+                    Name = cq.Key,
+                    Quantity = cq.Value,
                 };
                 storeComponents.Add(components);
             }
@@ -147,6 +254,7 @@ namespace rendszerfejlesztes_beadando.Repositories
 
         public async Task<bool> PriceCalculation(string location) 
         {
+
             bool componentsAvailable = true;
             var project = await _context.Projects.FirstAsync(p => p.Location == location);
             var projectComponents = await _context.ProjectsComponents.Where(pc =>
@@ -214,6 +322,82 @@ namespace rendszerfejlesztes_beadando.Repositories
             }
             await _context.SaveChangesAsync();
             return componentsAvailable;
+        }
+
+        public async Task<IEnumerable<MissingComponents>> GetProjectsComponentsInformation()
+        {
+            List<MissingComponents> missingComponents = new List<MissingComponents>();
+            List<StoreComponent> reservedComponents = new List<StoreComponent>();
+            List<StoreComponent> missComponents = new List<StoreComponent>();
+
+            Dictionary<string, int> componentsQuantity = new Dictionary<string, int>();
+
+            var projectComponents = await _context.ProjectsComponents.ToListAsync();
+            var projects = await _context.Projects.ToListAsync();
+            var components = await _context.Components.ToListAsync();
+
+            foreach (var project in projects)
+            {
+                missComponents.Clear();
+                reservedComponents.Clear();
+                foreach (var component in components)
+                {
+                    componentsQuantity[component.Name] = 0;
+                }
+                foreach (var projectComponent in projectComponents)
+                {
+                    var component = components.First(c => c.Id == projectComponent.ComponentId);
+                    if (projectComponent.ProjectId == project.Id && projectComponent.StorageId != null)
+                    {
+                        componentsQuantity[component.Name] += projectComponent.Quantity;
+                    }
+                }
+                foreach (var c in componentsQuantity)
+                {
+                    if (c.Value != 0)
+                    {
+                        var reservedComponent = new StoreComponent
+                        {
+                            Name = c.Key,
+                            Quantity = c.Value,
+                        };
+                        reservedComponents.Add(reservedComponent);
+                    }
+                }
+                foreach (var component in components)
+                {
+                    componentsQuantity[component.Name] = 0;
+                }
+                foreach (var projectComponent in projectComponents)
+                {
+                    var component = components.First(c => c.Id == projectComponent.ComponentId);
+                    if (projectComponent.ProjectId == project.Id && projectComponent.StorageId == null)
+                    {
+                        componentsQuantity[component.Name] += projectComponent.Quantity;
+                    }
+                }
+                foreach (var c in componentsQuantity)
+                {
+                    if (c.Value != 0)
+                    {
+                        var missComponent = new StoreComponent
+                        {
+                            Name = c.Key,
+                            Quantity = c.Value,
+                        };
+                        missComponents.Add(missComponent);
+                    }
+                }
+                var mc = new MissingComponents
+                {
+                    Location = project.Location,
+                    MissingCompsFromProjects = missComponents.ToList(),
+                    ReservedComponents = reservedComponents.ToList(),
+                };
+                missingComponents.Add(mc);
+            }
+
+            return missingComponents;
         }
     }
 }

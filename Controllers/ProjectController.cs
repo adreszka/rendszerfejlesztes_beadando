@@ -29,7 +29,7 @@ namespace rendszerfejlesztes_beadando.Controllers
             return Ok(results);
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task<ActionResult<bool>> AddComponentToProject([FromBody] AddComponentToProject component)
         {
             var result = await repo.AddComponentToProject(component);
@@ -58,9 +58,16 @@ namespace rendszerfejlesztes_beadando.Controllers
         }
 
         [HttpPut("{location}")]
-        public async Task<ActionResult<bool>> PriceCalculation(string location) 
-        { 
+        public async Task<ActionResult<bool>> PriceCalculation(string location)
+        {
             var result = await repo.PriceCalculation(location);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<MissingComponents>>> GetProjectsComponentsInformation() 
+        {
+            var result = await repo.GetProjectsComponentsInformation();
             return Ok(result);
         }
     }

@@ -6,6 +6,7 @@ namespace rendszerfejlesztes_beadando.Models
     {
         public int ProjectId { get; set; }
         public int ComponentId { get; set; }
+        public int? StorageId { get; set; }
         public int Quantity { get; set; }
 
     }

@@ -14,6 +14,7 @@ const context = [
     "/Component/UpdateComponentPrice",
     "/Component/GetAll",
     "/Component/GetAvailableComponent",
+    "/Component/GetMissingComponents",
     "/User",
     "/Storage",
     "/Project",
@@ -23,6 +24,7 @@ const context = [
     "/Project/GetProjectComponents",
     "/Project/AddNewProject",
     "/Project/GetProjectsWithStatus",
+    "/Project/GetProjectsComponentsInformation",
 ];
 
 module.exports = function(app) {
