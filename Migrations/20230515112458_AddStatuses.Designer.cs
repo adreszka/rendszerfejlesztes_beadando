@@ -12,8 +12,8 @@ using rendszerfejlesztes_beadando.Data;
 namespace rendszerfejlesztes_beadando.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230422124507_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230515112458_AddStatuses")]
+    partial class AddStatuses
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -163,11 +163,16 @@ namespace rendszerfejlesztes_beadando.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<int?>("StorageId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ComponentId");
 
                     b.HasIndex("ProjectId");
+
+                    b.HasIndex("StorageId");
 
                     b.ToTable("ProjectsComponents");
                 });
@@ -269,9 +274,15 @@ namespace rendszerfejlesztes_beadando.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("rendszerfejlesztes_beadando.Models.Entities.Storage", "Storage")
+                        .WithMany()
+                        .HasForeignKey("StorageId");
+
                     b.Navigation("Component");
 
                     b.Navigation("Project");
+
+                    b.Navigation("Storage");
                 });
 
             modelBuilder.Entity("rendszerfejlesztes_beadando.Models.Entities.Storage", b =>

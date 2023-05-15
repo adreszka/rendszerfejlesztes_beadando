@@ -136,6 +136,7 @@ namespace rendszerfejlesztes_beadando.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProjectId = table.Column<int>(type: "int", nullable: false),
                     ComponentId = table.Column<int>(type: "int", nullable: false),
+                    StorageId = table.Column<int>(type: "int", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -153,6 +154,11 @@ namespace rendszerfejlesztes_beadando.Migrations
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProjectsComponents_Storage_StorageId",
+                        column: x => x.StorageId,
+                        principalTable: "Storage",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -199,6 +205,11 @@ namespace rendszerfejlesztes_beadando.Migrations
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProjectsComponents_StorageId",
+                table: "ProjectsComponents",
+                column: "StorageId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Statuses_Name",
                 table: "Statuses",
                 column: "Name",
@@ -226,19 +237,19 @@ namespace rendszerfejlesztes_beadando.Migrations
                 name: "ProjectsComponents");
 
             migrationBuilder.DropTable(
-                name: "Storage");
-
-            migrationBuilder.DropTable(
                 name: "Statuses");
 
             migrationBuilder.DropTable(
                 name: "Projects");
 
             migrationBuilder.DropTable(
-                name: "Components");
+                name: "Storage");
 
             migrationBuilder.DropTable(
                 name: "Customers");
+
+            migrationBuilder.DropTable(
+                name: "Components");
         }
     }
 }
