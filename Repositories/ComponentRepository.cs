@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using rendszerfejlesztes_beadando.Data;
 using rendszerfejlesztes_beadando.Models;
@@ -61,10 +62,6 @@ namespace rendszerfejlesztes_beadando.Repositories
             var storage = await _context.Storage.ToListAsync();
             foreach (var row in storage)
             {
-                if (row.ComponentId == null)
-                {
-                    break;
-                }
                 if (row.ComponentId == component.Id)
                 {
                     componentQuantityInStorage += (int)row.Quantity;
@@ -84,6 +81,41 @@ namespace rendszerfejlesztes_beadando.Repositories
                 AvailableQuantity = componentQuantityInStorage - reservedComponentQuantity,
             };
             return availableComponent;
+        }
+
+        public async Task<Dictionary<string, int>> GetMissingComponents() 
+        {
+            Dictionary<string, int> missingComponents = new Dictionary<string, int>();
+            var components = await GetAll();
+            foreach (var component in components) 
+            {
+                missingComponents.Add(component.Name, 0);
+            }
+            var storage = await _context.Storage.ToListAsync();
+            foreach (var row in storage)
+            {
+                foreach (var component in components)
+                {
+                    if (row.ComponentId == component.Id)
+                    {
+                        missingComponents[component.Name] += (int)row.Quantity;
+                        break;
+                    }
+                }
+            }
+            var reserved = await _context.ProjectsComponents.ToListAsync();
+            foreach (var r in reserved)
+            {
+                foreach (var component in components)
+                {
+                    if (r.ComponentId == component.Id)
+                    {
+                        missingComponents[component.Name] -= (int)r.Quantity;
+                        break;
+                    }
+                }
+            }
+            return missingComponents;
         }
     }
 }
