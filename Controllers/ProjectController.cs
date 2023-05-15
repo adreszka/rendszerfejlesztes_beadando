@@ -77,5 +77,12 @@ namespace rendszerfejlesztes_beadando.Controllers
             var result = await repo.CloseProject(projectClose);
             return Ok(result);
         }
+
+        [HttpGet("{location}")]
+        public async Task<ActionResult<AllInformationAboutTheProject>> ListProject(string location) 
+        {
+            var result = await repo.ListProject(location);
+            return Ok(result);
+        }
     }
 }
