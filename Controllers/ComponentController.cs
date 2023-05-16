@@ -50,5 +50,12 @@ namespace rendszerfejlesztes_beadando.Controllers
             var result = await repo.GetAvailableComponent(componentName);
             return Ok(result);
         }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<StoreComponent>>> GetMissingComponents() 
+        {
+            var result = await repo.GetMissingComponents();
+            return Ok(result);
+        }
     }
 }

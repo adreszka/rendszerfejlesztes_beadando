@@ -14,15 +14,23 @@ const context = [
     "/Component/UpdateComponentPrice",
     "/Component/GetAll",
     "/Component/GetAvailableComponent",
+    "/Component/GetMissingComponents",
     "/User",
     "/Storage",
     "/Project",
+    "/Project/PriceCalculation",
+    "/Project/GetProjectsComponentsInformation",
+    "/Project/CloseProject",
+    "/Project/ListProject",
+    "/Project/GetMissingProjectComponents",
+    "/Project/AddComponentToProjectManual",
     "/Project/AddWorkTimeAndFee",
     "/Project/AddComponentToProject",
     "/Project/GetProjects",
     "/Project/GetProjectComponents",
     "/Project/AddNewProject",
     "/Project/GetProjectsWithStatus",
+    "/Project/GetProjectsComponentsInformation",
 ];
 
 module.exports = function(app) {

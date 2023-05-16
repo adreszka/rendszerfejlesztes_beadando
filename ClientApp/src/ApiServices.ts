@@ -231,6 +231,50 @@ export class Client {
     }
 
     /**
+     * @return Success
+     */
+    getMissingComponents(): Promise<StoreComponent[]> {
+        let url_ = this.baseUrl + "/Component/GetMissingComponents";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetMissingComponents(_response);
+        });
+    }
+
+    protected processGetMissingComponents(response: Response): Promise<StoreComponent[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(StoreComponent.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<StoreComponent[]>(null as any);
+    }
+
+    /**
      * @param body (optional) 
      * @return Success
      */
@@ -328,7 +372,7 @@ export class Client {
 
         let options_: RequestInit = {
             body: content_,
-            method: "POST",
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "text/plain"
@@ -491,6 +535,264 @@ export class Client {
     }
 
     /**
+     * @return Success
+     */
+    priceCalculation(location: string): Promise<boolean> {
+        let url_ = this.baseUrl + "/Project/PriceCalculation/{location}";
+        if (location === undefined || location === null)
+            throw new Error("The parameter 'location' must be defined.");
+        url_ = url_.replace("{location}", encodeURIComponent("" + location));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "PUT",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processPriceCalculation(_response);
+        });
+    }
+
+    protected processPriceCalculation(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    getProjectsComponentsInformation(): Promise<MissingComponents[]> {
+        let url_ = this.baseUrl + "/Project/GetProjectsComponentsInformation";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetProjectsComponentsInformation(_response);
+        });
+    }
+
+    protected processGetProjectsComponentsInformation(response: Response): Promise<MissingComponents[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(MissingComponents.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MissingComponents[]>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    closeProject(body: ProjectClose | undefined): Promise<boolean> {
+        let url_ = this.baseUrl + "/Project/CloseProject";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processCloseProject(_response);
+        });
+    }
+
+    protected processCloseProject(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    listProject(location: string): Promise<AllInformationAboutTheProject> {
+        let url_ = this.baseUrl + "/Project/ListProject/{location}";
+        if (location === undefined || location === null)
+            throw new Error("The parameter 'location' must be defined.");
+        url_ = url_.replace("{location}", encodeURIComponent("" + location));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processListProject(_response);
+        });
+    }
+
+    protected processListProject(response: Response): Promise<AllInformationAboutTheProject> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AllInformationAboutTheProject.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AllInformationAboutTheProject>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    getMissingProjectComponents(location: string): Promise<StoreComponent[]> {
+        let url_ = this.baseUrl + "/Project/GetMissingProjectComponents/{location}";
+        if (location === undefined || location === null)
+            throw new Error("The parameter 'location' must be defined.");
+        url_ = url_.replace("{location}", encodeURIComponent("" + location));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetMissingProjectComponents(_response);
+        });
+    }
+
+    protected processGetMissingProjectComponents(response: Response): Promise<StoreComponent[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(StoreComponent.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<StoreComponent[]>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    addComponentToProjectManual(body: AddComponentToProjectManually | undefined): Promise<boolean> {
+        let url_ = this.baseUrl + "/Project/AddComponentToProjectManual";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAddComponentToProjectManual(_response);
+        });
+    }
+
+    protected processAddComponentToProjectManual(response: Response): Promise<boolean> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<boolean>(null as any);
+    }
+
+    /**
      * @param body (optional) 
      * @return Success
      */
@@ -531,6 +833,53 @@ export class Client {
             });
         }
         return Promise.resolve<number>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    storageAll(componentName: string): Promise<StorageModel[]> {
+        let url_ = this.baseUrl + "/Storage/{componentName}";
+        if (componentName === undefined || componentName === null)
+            throw new Error("The parameter 'componentName' must be defined.");
+        url_ = url_.replace("{componentName}", encodeURIComponent("" + componentName));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processStorageAll(_response);
+        });
+    }
+
+    protected processStorageAll(response: Response): Promise<StorageModel[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(StorageModel.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<StorageModel[]>(null as any);
     }
 
     /**
@@ -663,6 +1012,126 @@ export interface IAddComponentToProject {
     location?: string | undefined;
     name?: string | undefined;
     quantity?: number;
+}
+
+export class AddComponentToProjectManually implements IAddComponentToProjectManually {
+    addComponentToProject?: AddComponentToProject;
+    storageLocation?: StorageLocation;
+
+    constructor(data?: IAddComponentToProjectManually) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.addComponentToProject = _data["addComponentToProject"] ? AddComponentToProject.fromJS(_data["addComponentToProject"]) : <any>undefined;
+            this.storageLocation = _data["storageLocation"] ? StorageLocation.fromJS(_data["storageLocation"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): AddComponentToProjectManually {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddComponentToProjectManually();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["addComponentToProject"] = this.addComponentToProject ? this.addComponentToProject.toJSON() : <any>undefined;
+        data["storageLocation"] = this.storageLocation ? this.storageLocation.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IAddComponentToProjectManually {
+    addComponentToProject?: AddComponentToProject;
+    storageLocation?: StorageLocation;
+}
+
+export class AllInformationAboutTheProject implements IAllInformationAboutTheProject {
+    statusName?: string | undefined;
+    project?: ProjectModel;
+    missingCompsFromProjects?: StoreComponent[] | undefined;
+    reservedComponents?: StoreComponent[] | undefined;
+    customer?: CustomerModel;
+    projectComponents?: PathData[] | undefined;
+
+    constructor(data?: IAllInformationAboutTheProject) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.statusName = _data["statusName"];
+            this.project = _data["project"] ? ProjectModel.fromJS(_data["project"]) : <any>undefined;
+            if (Array.isArray(_data["missingCompsFromProjects"])) {
+                this.missingCompsFromProjects = [] as any;
+                for (let item of _data["missingCompsFromProjects"])
+                    this.missingCompsFromProjects!.push(StoreComponent.fromJS(item));
+            }
+            if (Array.isArray(_data["reservedComponents"])) {
+                this.reservedComponents = [] as any;
+                for (let item of _data["reservedComponents"])
+                    this.reservedComponents!.push(StoreComponent.fromJS(item));
+            }
+            this.customer = _data["customer"] ? CustomerModel.fromJS(_data["customer"]) : <any>undefined;
+            if (Array.isArray(_data["projectComponents"])) {
+                this.projectComponents = [] as any;
+                for (let item of _data["projectComponents"])
+                    this.projectComponents!.push(PathData.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): AllInformationAboutTheProject {
+        data = typeof data === 'object' ? data : {};
+        let result = new AllInformationAboutTheProject();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["statusName"] = this.statusName;
+        data["project"] = this.project ? this.project.toJSON() : <any>undefined;
+        if (Array.isArray(this.missingCompsFromProjects)) {
+            data["missingCompsFromProjects"] = [];
+            for (let item of this.missingCompsFromProjects)
+                data["missingCompsFromProjects"].push(item.toJSON());
+        }
+        if (Array.isArray(this.reservedComponents)) {
+            data["reservedComponents"] = [];
+            for (let item of this.reservedComponents)
+                data["reservedComponents"].push(item.toJSON());
+        }
+        data["customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        if (Array.isArray(this.projectComponents)) {
+            data["projectComponents"] = [];
+            for (let item of this.projectComponents)
+                data["projectComponents"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IAllInformationAboutTheProject {
+    statusName?: string | undefined;
+    project?: ProjectModel;
+    missingCompsFromProjects?: StoreComponent[] | undefined;
+    reservedComponents?: StoreComponent[] | undefined;
+    customer?: CustomerModel;
+    projectComponents?: PathData[] | undefined;
 }
 
 export class AvailableComponent implements IAvailableComponent {
@@ -801,6 +1270,54 @@ export interface ICustomer {
     taxNumber?: string | undefined;
 }
 
+export class CustomerModel implements ICustomerModel {
+    name?: string | undefined;
+    phoneNumber?: string | undefined;
+    email?: string | undefined;
+    taxNumber?: string | undefined;
+
+    constructor(data?: ICustomerModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.phoneNumber = _data["phoneNumber"];
+            this.email = _data["email"];
+            this.taxNumber = _data["taxNumber"];
+        }
+    }
+
+    static fromJS(data: any): CustomerModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["phoneNumber"] = this.phoneNumber;
+        data["email"] = this.email;
+        data["taxNumber"] = this.taxNumber;
+        return data;
+    }
+}
+
+export interface ICustomerModel {
+    name?: string | undefined;
+    phoneNumber?: string | undefined;
+    email?: string | undefined;
+    taxNumber?: string | undefined;
+}
+
 export class LoginUser implements ILoginUser {
     username?: string | undefined;
     password?: string | undefined;
@@ -839,6 +1356,66 @@ export class LoginUser implements ILoginUser {
 export interface ILoginUser {
     username?: string | undefined;
     password?: string | undefined;
+}
+
+export class MissingComponents implements IMissingComponents {
+    location?: string | undefined;
+    missingCompsFromProjects?: StoreComponent[] | undefined;
+    reservedComponents?: StoreComponent[] | undefined;
+
+    constructor(data?: IMissingComponents) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.location = _data["location"];
+            if (Array.isArray(_data["missingCompsFromProjects"])) {
+                this.missingCompsFromProjects = [] as any;
+                for (let item of _data["missingCompsFromProjects"])
+                    this.missingCompsFromProjects!.push(StoreComponent.fromJS(item));
+            }
+            if (Array.isArray(_data["reservedComponents"])) {
+                this.reservedComponents = [] as any;
+                for (let item of _data["reservedComponents"])
+                    this.reservedComponents!.push(StoreComponent.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): MissingComponents {
+        data = typeof data === 'object' ? data : {};
+        let result = new MissingComponents();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["location"] = this.location;
+        if (Array.isArray(this.missingCompsFromProjects)) {
+            data["missingCompsFromProjects"] = [];
+            for (let item of this.missingCompsFromProjects)
+                data["missingCompsFromProjects"].push(item.toJSON());
+        }
+        if (Array.isArray(this.reservedComponents)) {
+            data["reservedComponents"] = [];
+            for (let item of this.reservedComponents)
+                data["reservedComponents"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IMissingComponents {
+    location?: string | undefined;
+    missingCompsFromProjects?: StoreComponent[] | undefined;
+    reservedComponents?: StoreComponent[] | undefined;
 }
 
 export class NewProject implements INewProject {
@@ -895,6 +1472,50 @@ export interface INewProject {
     taxNumber?: string | undefined;
     location?: string | undefined;
     description?: string | undefined;
+}
+
+export class PathData implements IPathData {
+    componentName?: string | undefined;
+    location?: StorageLocation;
+    quantity?: number;
+
+    constructor(data?: IPathData) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.componentName = _data["componentName"];
+            this.location = _data["location"] ? StorageLocation.fromJS(_data["location"]) : <any>undefined;
+            this.quantity = _data["quantity"];
+        }
+    }
+
+    static fromJS(data: any): PathData {
+        data = typeof data === 'object' ? data : {};
+        let result = new PathData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["componentName"] = this.componentName;
+        data["location"] = this.location ? this.location.toJSON() : <any>undefined;
+        data["quantity"] = this.quantity;
+        return data;
+    }
+}
+
+export interface IPathData {
+    componentName?: string | undefined;
+    location?: StorageLocation;
+    quantity?: number;
 }
 
 export class Project implements IProject {
@@ -961,6 +1582,98 @@ export interface IProject {
     componentsPrices?: number | undefined;
 }
 
+export class ProjectClose implements IProjectClose {
+    location?: string | undefined;
+    projectFinished?: boolean;
+
+    constructor(data?: IProjectClose) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.location = _data["location"];
+            this.projectFinished = _data["projectFinished"];
+        }
+    }
+
+    static fromJS(data: any): ProjectClose {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProjectClose();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["location"] = this.location;
+        data["projectFinished"] = this.projectFinished;
+        return data;
+    }
+}
+
+export interface IProjectClose {
+    location?: string | undefined;
+    projectFinished?: boolean;
+}
+
+export class ProjectModel implements IProjectModel {
+    location?: string | undefined;
+    description?: string | undefined;
+    workTime?: number | undefined;
+    fee?: number | undefined;
+    componentPrices?: number | undefined;
+
+    constructor(data?: IProjectModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.location = _data["location"];
+            this.description = _data["description"];
+            this.workTime = _data["workTime"];
+            this.fee = _data["fee"];
+            this.componentPrices = _data["componentPrices"];
+        }
+    }
+
+    static fromJS(data: any): ProjectModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProjectModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["location"] = this.location;
+        data["description"] = this.description;
+        data["workTime"] = this.workTime;
+        data["fee"] = this.fee;
+        data["componentPrices"] = this.componentPrices;
+        return data;
+    }
+}
+
+export interface IProjectModel {
+    location?: string | undefined;
+    description?: string | undefined;
+    workTime?: number | undefined;
+    fee?: number | undefined;
+    componentPrices?: number | undefined;
+}
+
 export class ProjectStatus implements IProjectStatus {
     statusName?: string | undefined;
 
@@ -995,6 +1708,98 @@ export class ProjectStatus implements IProjectStatus {
 
 export interface IProjectStatus {
     statusName?: string | undefined;
+}
+
+export class StorageLocation implements IStorageLocation {
+    row?: number;
+    columnn?: number;
+    level?: number;
+
+    constructor(data?: IStorageLocation) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.row = _data["row"];
+            this.columnn = _data["columnn"];
+            this.level = _data["level"];
+        }
+    }
+
+    static fromJS(data: any): StorageLocation {
+        data = typeof data === 'object' ? data : {};
+        let result = new StorageLocation();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["row"] = this.row;
+        data["columnn"] = this.columnn;
+        data["level"] = this.level;
+        return data;
+    }
+}
+
+export interface IStorageLocation {
+    row?: number;
+    columnn?: number;
+    level?: number;
+}
+
+export class StorageModel implements IStorageModel {
+    row?: number;
+    columnn?: number;
+    level?: number;
+    freeComponent?: StoreComponent;
+
+    constructor(data?: IStorageModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.row = _data["row"];
+            this.columnn = _data["columnn"];
+            this.level = _data["level"];
+            this.freeComponent = _data["freeComponent"] ? StoreComponent.fromJS(_data["freeComponent"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): StorageModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new StorageModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["row"] = this.row;
+        data["columnn"] = this.columnn;
+        data["level"] = this.level;
+        data["freeComponent"] = this.freeComponent ? this.freeComponent.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IStorageModel {
+    row?: number;
+    columnn?: number;
+    level?: number;
+    freeComponent?: StoreComponent;
 }
 
 export class StoreComponent implements IStoreComponent {

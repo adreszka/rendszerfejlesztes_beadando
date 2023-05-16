@@ -10,6 +10,8 @@ namespace rendszerfejlesztes_beadando.Models.Entities
         public Project Project { get; set; }
         public int ComponentId { get; set; }
         public Component Component { get; set; }
+        public int? StorageId { get; set; }
+        public Storage? Storage { get; set; }
         public int Quantity { get; set; }
 
     }

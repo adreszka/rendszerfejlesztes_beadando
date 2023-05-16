@@ -22,5 +22,12 @@ namespace rendszerfejlesztes_beadando.Controllers
             var result = await repo.StoreComponent(parameters);
             return Ok(result);
         }
+
+        [HttpGet("{componentName}")]
+        public async Task<ActionResult<IEnumerable<StorageModel>>> GetFreeComponents(string componentName) 
+        {
+            var result = await repo.GetFreeComponents(componentName);
+            return Ok(result);
+        }
     }
 }
