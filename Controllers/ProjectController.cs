@@ -65,23 +65,37 @@ namespace rendszerfejlesztes_beadando.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MissingComponents>>> GetProjectsComponentsInformation() 
+        public async Task<ActionResult<IEnumerable<MissingComponents>>> GetProjectsComponentsInformation()
         {
             var result = await repo.GetProjectsComponentsInformation();
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<bool>> CloseProject([FromBody] ProjectClose projectClose) 
+        public async Task<ActionResult<bool>> CloseProject([FromBody] ProjectClose projectClose)
         {
             var result = await repo.CloseProject(projectClose);
             return Ok(result);
         }
 
         [HttpGet("{location}")]
-        public async Task<ActionResult<AllInformationAboutTheProject>> ListProject(string location) 
+        public async Task<ActionResult<AllInformationAboutTheProject>> ListProject(string location)
         {
             var result = await repo.ListProject(location);
+            return Ok(result);
+        }
+
+        [HttpGet("{location}")]
+        public async Task<ActionResult<IEnumerable<StoreComponent>>> GetMissingProjectComponents(string location)
+        {
+            var result = await repo.GetMissingProjectComponents(location);
+            return Ok(result);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<bool>> AddComponentToProjectManual([FromBody] AddComponentToProjectManually component)
+        {
+            var result = await repo.AddComponentToProjectManual(component);
             return Ok(result);
         }
     }

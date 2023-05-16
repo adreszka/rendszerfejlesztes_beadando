@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using rendszerfejlesztes_beadando.Data;
 using rendszerfejlesztes_beadando.Models;
 
@@ -81,6 +82,46 @@ namespace rendszerfejlesztes_beadando.Repositories
             }
 
             return quantity;
+        }
+
+        public async Task<IEnumerable<StorageModel>> GetFreeComponents(string componentName)
+        {
+            List<StorageModel> freeComponents = new List<StorageModel>();
+            var component = await _context.Components.FirstAsync(c => c.Name == componentName);
+            var storage = await _context.Storage.ToListAsync();
+            var projectComponents = await _context.ProjectsComponents.ToListAsync();
+            foreach (var s in storage) 
+            {
+                int reservedComponents = 0;
+                if (s.ComponentId == component.Id)
+                {
+                    foreach (var projectComponent in projectComponents)
+                    {
+                        if (projectComponent.StorageId == s.Id)
+                        {
+                            reservedComponents += projectComponent.Quantity;
+                        }
+                    }
+                    if (s.Quantity - reservedComponents > 0) 
+                    {
+                        var freeComponent = new StoreComponent
+                        {
+                            Name = componentName,
+                            Quantity = (int)s.Quantity - reservedComponents,
+                        };
+                        var storageModel = new StorageModel
+                        {
+                            Row = s.Row,
+                            Columnn = s.Columnn,
+                            Level = s.Level,
+                            FreeComponent = freeComponent,
+                        };
+                        freeComponents.Add(storageModel);
+                    }
+                }
+            }
+               
+            return freeComponents;
         }
     }
 }

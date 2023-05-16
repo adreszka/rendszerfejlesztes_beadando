@@ -561,5 +561,66 @@ namespace rendszerfejlesztes_beadando.Repositories
 
             return projectInformation;
         }
+
+        public async Task<IEnumerable<StoreComponent>> GetMissingProjectComponents(string location) 
+        {
+            var project = await _context.Projects.FirstAsync(p => p.Location == location);
+            var projectComponents = await _context.ProjectsComponents.Where(pc => pc.ProjectId == project.Id).
+                OrderBy(pc => pc.ComponentId).ToListAsync();
+            List<StoreComponent> storeComponents = new List<StoreComponent>();
+            var comp = await _context.Components.ToListAsync();
+            Dictionary<string, int> componentsQuantity = new Dictionary<string, int>();
+            foreach (var c in comp)
+            {
+                componentsQuantity.Add(c.Name, 0);
+            }
+            foreach (var projectComponent in projectComponents)
+            {
+                var component = await _context.Components.FirstAsync(c => c.Id == projectComponent.ComponentId);
+                if (projectComponent.ComponentId == component.Id && projectComponent.StorageId == null)
+                {
+                    componentsQuantity[component.Name] += projectComponent.Quantity;
+                }
+            }
+            foreach (var cq in componentsQuantity)
+            {
+                if (cq.Value > 0)
+                {
+                    var components = new StoreComponent
+                    {
+                        Name = cq.Key,
+                        Quantity = cq.Value,
+                    };
+                    storeComponents.Add(components);
+                }
+            }
+            return storeComponents;
+        }
+
+        public async Task<bool> AddComponentToProjectManual([FromBody] AddComponentToProjectManually component)
+        {
+            var project = await _context.Projects.FirstAsync(p => p.Location == component.AddComponentToProject.Location);
+            var comp = await _context.Components.FirstAsync(c => c.Name == component.AddComponentToProject.Name);
+            var storage = await _context.Storage.FirstAsync(s =>
+            s.Row == component.StorageLocation.Row && s.Columnn == component.StorageLocation.Columnn
+            && s.Level == component.StorageLocation.Level);
+            var projectComponent = await _context.ProjectsComponents.FirstAsync(pc =>
+            pc.ComponentId == comp.Id && pc.ProjectId == project.Id && pc.StorageId == null);
+            if (projectComponent.Quantity < component.AddComponentToProject.Quantity) 
+            {
+                return false;
+            }
+            projectComponent.Quantity -= component.AddComponentToProject.Quantity;
+            var pc = new ProjectComponent
+            {
+                ComponentId = comp.Id,
+                ProjectId = project.Id,
+                Quantity = component.AddComponentToProject.Quantity,
+                StorageId = storage.Id,
+            };
+            await _context.AddAsync(pc);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
