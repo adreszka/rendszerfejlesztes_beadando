@@ -416,6 +416,16 @@ namespace rendszerfejlesztes_beadando.Repositories
             var statusF = await _context.Statuses.FirstAsync(s => s.Name == "Failed");
             var project = await _context.Projects.FirstAsync(p => p.Location == projectClose.Location);
             var logs = await _context.Logs.OrderByDescending(l => l.Date).ToListAsync();
+            if (projectClose.ProjectFinished == true) 
+            {
+                foreach (var l in logs) 
+                {
+                    if (l.ProjectId == project.Id && l.StatusId != 5) 
+                    {
+                        return false;
+                    }
+                }
+            }
             foreach (var l in logs)
             {
                 if ((l.ProjectId == project.Id && l.StatusId == statusC.Id) || (l.ProjectId == project.Id && l.StatusId == statusF.Id)) 
@@ -447,83 +457,99 @@ namespace rendszerfejlesztes_beadando.Repositories
 
         public async Task<AllInformationAboutTheProject> ListProject(string location) 
         {
-            List<StoreComponent> reservedComponents = new List<StoreComponent>();
-            List<StoreComponent> missComponents = new List<StoreComponent>();
+            //List<StoreComponent> reservedComponents = new List<StoreComponent>();
+            //List<StoreComponent> missComponents = new List<StoreComponent>();
             List<PathData> compsOnProject = new List<PathData>();
 
-            Dictionary<string, int> componentsQuantity = new Dictionary<string, int>();
+            //Dictionary<string, int> componentsQuantity = new Dictionary<string, int>();
 
             var project = await _context.Projects.FirstAsync(p => p.Location == location);
             var projectComponents = await _context.ProjectsComponents.Where(pc => pc.ProjectId == project.Id).ToListAsync();
             var components = await _context.Components.ToListAsync();
 
-            foreach (var component in components)
-            {
-                componentsQuantity[component.Name] = 0;
-            }
-            foreach (var projectComponent in projectComponents)
-            {
-                var component = components.First(c => c.Id == projectComponent.ComponentId);
-                if (projectComponent.StorageId != null)
-                {
-                    componentsQuantity[component.Name] += projectComponent.Quantity;
-                }
-            }
-            foreach (var c in componentsQuantity)
-            {
-                if (c.Value != 0)
-                {
-                    var reservedComponent = new StoreComponent
-                    {
-                        Name = c.Key,
-                        Quantity = c.Value,
-                    };
-                    reservedComponents.Add(reservedComponent);
-                }
-            }
-            foreach (var component in components)
-            {
-                componentsQuantity[component.Name] = 0;
-            }
-            foreach (var projectComponent in projectComponents)
-            {
-                var component = components.First(c => c.Id == projectComponent.ComponentId);
-                if (projectComponent.StorageId == null)
-                {
-                    componentsQuantity[component.Name] += projectComponent.Quantity;
-                }
-            }
-            foreach (var c in componentsQuantity)
-            {
-                if (c.Value != 0)
-                {
-                    var missComponent = new StoreComponent
-                    {
-                        Name = c.Key,
-                        Quantity = c.Value,
-                    };
-                    missComponents.Add(missComponent);
-                }
-            }
-            var projectModel = new ProjectModel
-            {
-                Location = project.Location,
-                ComponentPrices = project.ComponentsPrices,
-                Description = project.Description,
-                Fee = project.Fee,
-                WorkTime = project.WorkTime,
-            };
-            var customer = await _context.Customers.FirstAsync(c => c.Id == project.CustomerId);
-            var customerModel = new CustomerModel
-            {
-                Name = customer.Name,
-                Email = customer.Email,
-                PhoneNumber = customer.PhoneNumber,
-                TaxNumber = customer.TaxNumber,
+            //foreach (var component in components)
+            //{
+            //    componentsQuantity[component.Name] = 0;
+            //}
+            //foreach (var projectComponent in projectComponents)
+            //{
+            //    var component = components.First(c => c.Id == projectComponent.ComponentId);
+            //    if (projectComponent.StorageId != null)
+            //    {
+            //        componentsQuantity[component.Name] += projectComponent.Quantity;
+            //    }
+            //}
+            //foreach (var c in componentsQuantity)
+            //{
+            //    if (c.Value != 0)
+            //    {
+            //        var reservedComponent = new StoreComponent
+            //        {
+            //            Name = c.Key,
+            //            Quantity = c.Value,
+            //        };
+            //        reservedComponents.Add(reservedComponent);
+            //    }
+            //}
+            //foreach (var component in components)
+            //{
+            //    componentsQuantity[component.Name] = 0;
+            //}
+            //foreach (var projectComponent in projectComponents)
+            //{
+            //    var component = components.First(c => c.Id == projectComponent.ComponentId);
+            //    if (projectComponent.StorageId == null)
+            //    {
+            //        componentsQuantity[component.Name] += projectComponent.Quantity;
+            //    }
+            //}
+            //foreach (var c in componentsQuantity)
+            //{
+            //    if (c.Value != 0)
+            //    {
+            //        var missComponent = new StoreComponent
+            //        {
+            //            Name = c.Key,
+            //            Quantity = c.Value,
+            //        };
+            //        missComponents.Add(missComponent);
+            //    }
+            //}
+            //var projectModel = new ProjectModel
+            //{
+            //    Location = project.Location,
+            //    ComponentPrices = project.ComponentsPrices,
+            //    Description = project.Description,
+            //    Fee = project.Fee,
+            //    WorkTime = project.WorkTime,
+            //};
+            //var customer = await _context.Customers.FirstAsync(c => c.Id == project.CustomerId);
+            //var customerModel = new CustomerModel
+            //{
+            //    Name = customer.Name,
+            //    Email = customer.Email,
+            //    PhoneNumber = customer.PhoneNumber,
+            //    TaxNumber = customer.TaxNumber,
 
-            };
-            var logs = await _context.Logs.OrderByDescending(l => l.Date).FirstAsync(l => l.ProjectId == project.Id);
-            var status = await _context.Statuses.FirstAsync(s => s.Id == logs.StatusId);
+            //};
+            var logs = await _context.Logs.OrderByDescending(l => l.Date).Where(l => l.ProjectId == project.Id).ToListAsync();
+            foreach (var l in logs)
+            {
+                if (l.StatusId == 7 || l.StatusId == 6 || l.StatusId == 5)
+                {
+                    break;
+                }
+                if (l.StatusId == 4)
+                {
+                    var la = new Log
+                    {
+                        ProjectId = project.Id,
+                        StatusId = 5,
+                    };
+                    await _context.AddAsync(la);
+                    await _context.SaveChangesAsync();
+                }
+            }
             var storage = await _context.Storage.ToListAsync();
             foreach (var s in storage) 
             {
@@ -549,13 +575,15 @@ namespace rendszerfejlesztes_beadando.Repositories
                 }
             }
             compsOnProject = Helper.FindShortestPath(compsOnProject);
+            var log = await _context.Logs.OrderByDescending(l => l.Date).FirstAsync(l => l.ProjectId == project.Id);
+            var status = await _context.Statuses.FirstAsync(s => s.Id == log.StatusId);
             var projectInformation = new AllInformationAboutTheProject
             {
-                Project = projectModel,
-                MissingCompsFromProjects = missComponents.ToList(),
-                ReservedComponents = reservedComponents.ToList(),
+                //Project = projectModel,
+                //MissingCompsFromProjects = missComponents.ToList(),
+                //ReservedComponents = reservedComponents.ToList(),
                 StatusName = status.Name,
-                Customer = customerModel,
+                //Customer = customerModel,
                 ProjectComponents = compsOnProject,
             };
 
