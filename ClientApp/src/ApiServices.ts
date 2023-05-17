@@ -1056,10 +1056,6 @@ export interface IAddComponentToProjectManually {
 
 export class AllInformationAboutTheProject implements IAllInformationAboutTheProject {
     statusName?: string | undefined;
-    project?: ProjectModel;
-    missingCompsFromProjects?: StoreComponent[] | undefined;
-    reservedComponents?: StoreComponent[] | undefined;
-    customer?: CustomerModel;
     projectComponents?: PathData[] | undefined;
 
     constructor(data?: IAllInformationAboutTheProject) {
@@ -1074,18 +1070,6 @@ export class AllInformationAboutTheProject implements IAllInformationAboutThePro
     init(_data?: any) {
         if (_data) {
             this.statusName = _data["statusName"];
-            this.project = _data["project"] ? ProjectModel.fromJS(_data["project"]) : <any>undefined;
-            if (Array.isArray(_data["missingCompsFromProjects"])) {
-                this.missingCompsFromProjects = [] as any;
-                for (let item of _data["missingCompsFromProjects"])
-                    this.missingCompsFromProjects!.push(StoreComponent.fromJS(item));
-            }
-            if (Array.isArray(_data["reservedComponents"])) {
-                this.reservedComponents = [] as any;
-                for (let item of _data["reservedComponents"])
-                    this.reservedComponents!.push(StoreComponent.fromJS(item));
-            }
-            this.customer = _data["customer"] ? CustomerModel.fromJS(_data["customer"]) : <any>undefined;
             if (Array.isArray(_data["projectComponents"])) {
                 this.projectComponents = [] as any;
                 for (let item of _data["projectComponents"])
@@ -1104,18 +1088,6 @@ export class AllInformationAboutTheProject implements IAllInformationAboutThePro
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["statusName"] = this.statusName;
-        data["project"] = this.project ? this.project.toJSON() : <any>undefined;
-        if (Array.isArray(this.missingCompsFromProjects)) {
-            data["missingCompsFromProjects"] = [];
-            for (let item of this.missingCompsFromProjects)
-                data["missingCompsFromProjects"].push(item.toJSON());
-        }
-        if (Array.isArray(this.reservedComponents)) {
-            data["reservedComponents"] = [];
-            for (let item of this.reservedComponents)
-                data["reservedComponents"].push(item.toJSON());
-        }
-        data["customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
         if (Array.isArray(this.projectComponents)) {
             data["projectComponents"] = [];
             for (let item of this.projectComponents)
@@ -1127,10 +1099,6 @@ export class AllInformationAboutTheProject implements IAllInformationAboutThePro
 
 export interface IAllInformationAboutTheProject {
     statusName?: string | undefined;
-    project?: ProjectModel;
-    missingCompsFromProjects?: StoreComponent[] | undefined;
-    reservedComponents?: StoreComponent[] | undefined;
-    customer?: CustomerModel;
     projectComponents?: PathData[] | undefined;
 }
 
@@ -1264,54 +1232,6 @@ export class Customer implements ICustomer {
 
 export interface ICustomer {
     id?: number;
-    name?: string | undefined;
-    phoneNumber?: string | undefined;
-    email?: string | undefined;
-    taxNumber?: string | undefined;
-}
-
-export class CustomerModel implements ICustomerModel {
-    name?: string | undefined;
-    phoneNumber?: string | undefined;
-    email?: string | undefined;
-    taxNumber?: string | undefined;
-
-    constructor(data?: ICustomerModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.name = _data["name"];
-            this.phoneNumber = _data["phoneNumber"];
-            this.email = _data["email"];
-            this.taxNumber = _data["taxNumber"];
-        }
-    }
-
-    static fromJS(data: any): CustomerModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomerModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["phoneNumber"] = this.phoneNumber;
-        data["email"] = this.email;
-        data["taxNumber"] = this.taxNumber;
-        return data;
-    }
-}
-
-export interface ICustomerModel {
     name?: string | undefined;
     phoneNumber?: string | undefined;
     email?: string | undefined;
@@ -1620,58 +1540,6 @@ export class ProjectClose implements IProjectClose {
 export interface IProjectClose {
     location?: string | undefined;
     projectFinished?: boolean;
-}
-
-export class ProjectModel implements IProjectModel {
-    location?: string | undefined;
-    description?: string | undefined;
-    workTime?: number | undefined;
-    fee?: number | undefined;
-    componentPrices?: number | undefined;
-
-    constructor(data?: IProjectModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.location = _data["location"];
-            this.description = _data["description"];
-            this.workTime = _data["workTime"];
-            this.fee = _data["fee"];
-            this.componentPrices = _data["componentPrices"];
-        }
-    }
-
-    static fromJS(data: any): ProjectModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new ProjectModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["location"] = this.location;
-        data["description"] = this.description;
-        data["workTime"] = this.workTime;
-        data["fee"] = this.fee;
-        data["componentPrices"] = this.componentPrices;
-        return data;
-    }
-}
-
-export interface IProjectModel {
-    location?: string | undefined;
-    description?: string | undefined;
-    workTime?: number | undefined;
-    fee?: number | undefined;
-    componentPrices?: number | undefined;
 }
 
 export class ProjectStatus implements IProjectStatus {
