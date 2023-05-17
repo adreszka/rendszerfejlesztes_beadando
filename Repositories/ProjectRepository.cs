@@ -574,7 +574,10 @@ namespace rendszerfejlesztes_beadando.Repositories
                     }
                 }
             }
-            compsOnProject = Helper.FindShortestPath(compsOnProject);
+            if (compsOnProject.Count() != 0)
+            {
+                compsOnProject = Helper.FindShortestPath(compsOnProject);
+            }
             var log = await _context.Logs.OrderByDescending(l => l.Date).FirstAsync(l => l.ProjectId == project.Id);
             var status = await _context.Statuses.FirstAsync(s => s.Id == log.StatusId);
             var projectInformation = new AllInformationAboutTheProject
