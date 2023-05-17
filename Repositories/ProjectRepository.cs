@@ -231,12 +231,15 @@ namespace rendszerfejlesztes_beadando.Repositories
             }
             foreach (var cq in componentsQuantity) 
             {
-                var components = new StoreComponent
+                if (cq.Value > 0)
                 {
-                    Name = cq.Key,
-                    Quantity = cq.Value,
-                };
-                storeComponents.Add(components);
+                    var components = new StoreComponent
+                    {
+                        Name = cq.Key,
+                        Quantity = cq.Value,
+                    };
+                    storeComponents.Add(components);
+                }
             }
             return storeComponents;
         }
