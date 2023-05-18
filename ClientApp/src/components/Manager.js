@@ -5,12 +5,35 @@ import { Client } from "../ApiServices.ts";
 export function Manager() {
     var client = new Client();
     const [elements, setElements] = useState([]);
+    const [projects, setProjects] = useState([]);
     const flag = null;
 
     useEffect(() => {
         getElements();
-    },[flag])
+        getProjects();
+    }, [flag])
 
+    const getProjects = async () => {
+        await client.getProjects().then((val) => {
+            setProjects(val);
+            listProjects();
+        }).catch((error) => console.log(error));
+    };
+
+    //list projects
+    const listProjects = () => {
+        var result = new Array();
+
+        result = result.concat(projects.map((temp) => {
+            var name = temp['location'];
+
+            return <option key={name} value={name} >{name}</option>;
+        }));
+
+        return result;
+    };
+
+    //add new component
     const addComponent = async (event) => {
         event.preventDefault();
         const data = new FormData(event.target);
@@ -99,6 +122,38 @@ export function Manager() {
         }
     };
 
+    //list missing compnents
+    const missingcomponents = async () => {
+        var text = "";
+
+        await client.getMissingComponents().then((val) => {
+            for (var i = 0; i < val.length; i++) {
+                text += val["name"] + " - " + val["quantity"] + "\n";
+            }
+        }).catch((error) => { console.log(error) });
+
+        document.getElementById("allMissing").value = text;
+    }
+    missingcomponents();
+
+    //list missing project components
+    const missingProComp = async (option) => {
+        if (option.target.value !== "choose") {
+            var text = "";
+
+            await client.getMissingProjectComponents(option.target.value).then((val) => {
+                for (var i = 0; i < val.length; i++) {
+                    text += val["name"] + " - " + val["quantity"] + "\n";
+                }
+            }).catch((error) => { console.log(error) });
+
+            document.getElementById("projectMissing").value = text;
+        } else {
+            document.getElementById("projectMissing").value = "";
+        }
+        
+    }
+
     return (
         <div>
             <table className="panels">
@@ -143,6 +198,8 @@ export function Manager() {
                                 </form>
                             </div>
                         </td>
+                    </tr>
+                    <tr>
                         <td>
                             <div className="bg">
                                 <h1>Store component</h1>
@@ -156,6 +213,25 @@ export function Manager() {
                                     </fieldset>
                                     <button>Store</button>
                                 </form>
+                            </div>
+                        </td>
+                        <td>
+                            <div className="bg">
+                                <h1>Missing components</h1>
+                                <textarea id="allMissing"></textarea>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colSpan="2">
+                            <div className="bg">
+                                <h1>Project components</h1>
+                                <select className="list" id="missingProject" onChange={missingProComp}>
+                                    <option key="choose" value="choose">Choose a project</option>
+                                    {listProjects()}
+                                </select>
+                                <br/>
+                                <textarea id="projectMissing"></textarea>
                             </div>
                         </td>
                     </tr>

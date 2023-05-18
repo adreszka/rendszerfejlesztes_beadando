@@ -225,6 +225,106 @@ export function Specialist() {
         }).catch((error) => { console.log(error) });
     };
 
+    //calculate price
+    const calculatePrice = async (event) => {
+        event.preventDefault();
+        const data = new FormData(event.target);
+
+        await client.priceCalculation(document.getElementById("selectProjects").value).then((val) => {
+            if (val) {
+                window.alert("The calculation was successful!");
+            } else {
+                window.alert("There was an issue durind the calculation!");
+            }
+        }).catch((error) => { console.log(error) });
+    };
+
+    //finish project
+    const finishProject = async (event) => {
+        event.preventDefault();
+        const data = new FormData(event.target);
+
+        await client.closeProject({
+            "location": document.getElementById("selectProjects").value,
+            "projectFinished": document.getElementById("completed").checked
+        }).then((val) => {
+            if (val) {
+                window.alert("The project was successfully finished!");
+            } else {
+                window.alert("the project cannot be finished!");
+            }
+        }).catch((error) => { console.log(error) });
+    }
+
+    //append component to project
+    const setAppendComponent = async (option) => {
+        var text = document.getElementById("selectProjectsAppend").value;
+        var select = document.getElementById("selectComponentsAppend");
+
+        {
+            for (var i = select.options.length - 1; i >= 0; i--) {
+                select.options[0] = null;
+            }
+            var option = document.createElement('option');
+            option.key = "choose";
+            option.value = "choose";
+            option.innerHTML = "Choose a component";
+
+            select.appendChild(option);
+        }
+
+        if (text !== "choose") {
+            var list = new Array();
+
+            await client.getProjectComponents(text).then((val) => {
+                list = val;
+            }).catch((error) => { console.log(error) });
+
+            for (var i = 0; i < list.length; i++) {
+                var option = document.createElement('option');
+                option.key = list[i]["name"];
+                option.value = list[i]["quantity"];
+                option.innerHTML = list[i]["name"];
+
+                select.appendChild(option);
+            }
+        }
+    }
+
+    const setAppendPosition = async (option) => {
+        var text = document.getElementById("selectComponentsAppend").value;
+        var select = document.getElementById("selectPositionsAppend");
+
+        {
+            for (var i = select.options.length - 1; i >= 0; i--) {
+                select.options[0] = null;
+            }
+            var option = document.createElement('option');
+            option.key = "choose";
+            option.value = "choose";
+            option.innerHTML = "Choose a position";
+
+            select.appendChild(option);
+        }
+
+        if (text !== "choose") {
+            var list = new Array();
+
+            await client.storageAll(option.target.value).then((val) => {
+                list = val;
+            }).catch((error) => { console.log(error) });
+
+            for (var i = 0; i < list.length; i++) {
+                var option = document.createElement('option');
+                option.key = list[i]["row"] + " " + list[i]["column"] + " " + list[i]["level"];
+                option.value = list[i]["freeComponent"]["name"] + " " + list[i]["freeComponent"]["quantity"];
+                option.innerHTML = list[i]["name"];
+
+                select.appendChild(option);
+            }
+        }
+    }
+
     return (
         <div>
             <table className="panels">
@@ -285,14 +385,40 @@ export function Specialist() {
                         <td>
                             <div className="bg">
                                 <h1>Projects</h1>
-                                <select className="list" id="selectProjects" name="selectProjects" onChange={setCurrentProject}>
-                                    <option key="choose" value="choose" >Choose a project</option>
-                                    {listProjects()}
-                                </select>
-                                <fieldset className="input-field">
-                                    <legend>State:</legend>
-                                    <input type="text" id="projectState" name="projectState" readOnly></input>
-                                </fieldset>
+                                <table className="buttons">
+                                    <tbody>
+                                        <tr>
+                                            <td colSpan="2">
+                                                <select className="list" id="selectProjects" name="selectProjects" onChange={setCurrentProject}>
+                                                    <option key="choose" value="choose" >Choose a project</option>
+                                                    {listProjects()}
+                                                </select>
+                                                <fieldset className="input-field">
+                                                    <legend>State:</legend>
+                                                    <input type="text" id="projectState" name="projectState" readOnly></input>
+                                                </fieldset>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <form onSubmit={calculatePrice}>
+                                                    <button>Calculate price</button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form onSubmit={finishProject}>
+                                                    <input type="radio" id="completed" name="finishRadio" value="completed"></input>
+                                                    <label for="completed">completed</label>
+                                                    <br/>
+                                                    <input type="radio" id="failed" name="finishRadio" value="failed"></input>
+                                                    <label for="failed">failed</label>
+                                                    <br/>
+                                                    <button>Finish project</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </td>
                         <td>
@@ -354,6 +480,35 @@ export function Specialist() {
                                         <input type="number" id="projectFee" name="projectFee" min="0"></input>
                                     </fieldset>
                                     <button>Set properties</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colSpan="2">
+                            <div className="bg">
+                                <h1>Append components to project</h1>
+                                <form>
+                                    <fieldset className="input-field">
+                                        <legend>Projects:</legend>
+                                        <select className="list" id="selectProjectsAppend" name="selectProjectsAppend" onChange={setAppendComponent}>
+                                            <option key="choose" value="choose" >Choose a project</option>
+                                            {listProjects()}
+                                        </select>
+                                    </fieldset>
+                                    <fieldset className="input-field">
+                                        <legend>Components:</legend>
+                                        <select className="list" id="selectComponentsAppend" name="selectComponentsAppend" onChange={setAppendPosition}>
+                                            <option key="choose" value="choose" >Choose a component</option>
+                                        </select>
+                                    </fieldset>
+                                    <fieldset className="input-field">
+                                        <legend>Positions:</legend>
+                                        <select className="list" id="selectPositionsAppend" name="selectPositionsAppend">
+                                            <option key="choose" value="choose" >Choose a position</option>
+                                        </select>
+                                    </fieldset>
+                                    <button>Append</button>
                                 </form>
                             </div>
                         </td>
