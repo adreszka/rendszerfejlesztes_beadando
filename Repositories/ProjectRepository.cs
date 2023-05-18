@@ -423,9 +423,13 @@ namespace rendszerfejlesztes_beadando.Repositories
             {
                 foreach (var l in logs) 
                 {
-                    if (l.ProjectId == project.Id && l.StatusId != 5) 
+                    if (l.ProjectId == project.Id) 
                     {
-                        return false;
+                        if (l.StatusId != 5) 
+                        {
+                            return false;
+                        }
+                        break;
                     }
                 }
             }
